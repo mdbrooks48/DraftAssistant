@@ -1,0 +1,22 @@
+﻿<label for="draftPickSelect">Show Picks for:</label>
+<select id="draftPickSelect" class="draftPickListSelect"">
+	<option>All</option>
+	<!-- ko foreach: FantasyTeams -->
+	<option data-bind="attr: { value: Id }, text: Name"></option>
+	<!-- /ko -->
+</select>
+<table id="draftPickTable">
+    <thead><tr>
+		<th>Player</th><th>Team</th><th>Position</th><th>Fantasy Team</th><th>Round Number</th><th>Is Keeper?</th>
+    </tr></thead>
+    <tbody data-bind="foreach: DraftPicks">
+        <tr>
+            <td data-bind="text: FullName"></td>
+            <td data-bind="text: TeamName"></td>
+			<td data-bind="text: Position"></td>
+            <td data-bind="text: FantasyTeamName"></td>
+            <td data-bind="text: RoundNumber" class="textRight"></td>
+			<td data-bind="text: IsKeeper"></td>
+        </tr>
+    </tbody>
+</table>

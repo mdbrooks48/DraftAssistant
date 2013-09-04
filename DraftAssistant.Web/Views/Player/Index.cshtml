@@ -1,0 +1,271 @@
+﻿@model List<DraftAssistant.DataAccess.Player>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section head {
+
+	<script type="text/javascript">
+		$(function () {
+			$('#tabs').tabs();
+		});
+	</script>
+	<style>
+		table {
+			border-collapse:collapse;
+			border-spacing: 2px;
+		}
+		table,th, td {
+			border: 1px solid black;
+		}
+		.textRight {
+			text-align: right;
+			padding-right: .25em;
+		}
+	</style>
+}
+
+@section scripts {
+    <script src="~/Scripts/knockout-2.3.0.js"></script>
+	<script src="~/Scripts/knockout.mapping-latest.js"></script>
+	<script type="text/javascript">
+		var PlayerListNamespace = {};
+
+		PlayerListNamespace.positions = [
+			{ id: 1, description: "QB"},
+			{ id: 2, description: "RB" },
+			{ id: 3, description: "WR" },
+			{ id: 5, description: "K" },
+			{ id: 6, description: "DST" }
+		];
+
+		var viewModel = {
+			All: ko.observableArray([]),
+			QB: ko.observableArray([]),
+			RB: ko.observableArray([]),
+			WR: ko.observableArray([]),
+			K: ko.observableArray([]),
+			DST: ko.observableArray([]),
+			ByeWeeks: ko.observableArray([]),
+			DraftPicks: ko.observableArray([]),
+			FantasyTeams: ko.observableArray([]),
+			DraftOrder: ko.observableArray([])
+		}
+
+		PlayerListNamespace.LookupPosition = function (positionId) {
+			var description = "";
+			$.each(PlayerListNamespace.positions, function (i, elem) {
+				if (elem.id == positionId) {
+					description = elem.description;
+					return false;
+				}
+			});
+			return description;
+		}
+
+		PlayerListNamespace.LookupId = function (description) {
+			var id = null;
+			$.each(PlayerListNamespace.positions, function (i, elem) {
+				if (elem.description == description) {
+					id = elem.id;
+					return false;
+				}
+			});
+			return id;
+		}
+
+		PlayerListNamespace.BindByPosition = function (items, position) {
+			switch (position) {
+				case "QB":
+					viewModel.QB(items);
+					break;
+				case "RB":
+					viewModel.RB(items);
+					break;
+				case "WR":
+					viewModel.WR(items);
+					break;
+				case "K":
+					viewModel.K(items);
+					break;
+				case "DST":
+					viewModel.DST(items);
+					break;
+				default:
+					viewModel.All(items);
+			}
+		}
+
+		PlayerListNamespace.GetAvailablePlayers = function (position, count) {
+			var qryString = null;
+			if (position) {
+				qryString = "?positionType=" + position;
+			}
+			if (count) {
+				if (!qryString) {
+					qryString = "?rowCount=" + count;
+				}
+				else {
+					qryString += "&rowCount=" + count;
+				}
+			}
+			$.ajax({
+				url: "/player/available/" + (!qryString ? "" : qryString),
+				type: 'get',
+				contentType: 'application/json',
+				success: function (result) {
+					var positionDescription = (position) ? PlayerListNamespace.LookupPosition(position) : null;
+					PlayerListNamespace.BindByPosition(result, positionDescription);
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					alert(jqXHR.error);
+				}
+			});
+		}
+
+		PlayerListNamespace.GetByeWeeks = function () {
+			$.ajax({
+				url: "/ByeWeek/",
+				type: 'get',
+				contentType: 'application/json',
+				success: function (result) {					
+					viewModel.ByeWeeks(result);
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					alert(jqXHR.error);
+				}
+			});
+		}
+
+		PlayerListNamespace.GetDraftPicks = function (fantasyTeam) {
+			var qryString = "";
+			
+			if (fantasyTeam) {
+				qryString = "?fantasyTeamId=" + fantasyTeam;
+			}
+
+			$.ajax({
+				url: "/DraftPick/" + (!qryString ? "" : qryString),
+				type: 'get',
+				contentType: 'application/json',
+				success: function (result) {
+					viewModel.DraftPicks(result);
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					alert(jqXHR.error);
+				}
+			});
+		}
+
+		PlayerListNamespace.GetFantasyTeams = function () {
+			$.ajax({
+				url: "/FantasyTeam/",
+				type: 'get',
+				contentType: 'application/json',
+				success: function (result) {
+					viewModel.FantasyTeams(result);
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					alert(jqXHR.error);
+				}
+			});
+		}
+
+		PlayerListNamespace.GetDraftOrder = function () {
+			$.ajax({
+				url: "/DraftPick/DraftOrder/",
+				type: 'get',
+				contentType: 'application/json',
+				success: function (result) {
+					viewModel.DraftOrder(result);
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					alert(jqXHR.error);
+				}
+			});
+		}
+
+		$(function () {
+			PlayerListNamespace.GetAvailablePlayers(null, 10);
+			PlayerListNamespace.GetAvailablePlayers(1, 10);
+			PlayerListNamespace.GetAvailablePlayers(2, 10);
+			PlayerListNamespace.GetAvailablePlayers(3, 10);
+			PlayerListNamespace.GetAvailablePlayers(5, 10);
+			PlayerListNamespace.GetAvailablePlayers(6, 10);
+			PlayerListNamespace.GetByeWeeks();
+			PlayerListNamespace.GetDraftPicks(null);
+			PlayerListNamespace.GetFantasyTeams();
+			PlayerListNamespace.GetDraftOrder();
+			ko.applyBindings(viewModel);
+		});
+
+		$(function () {
+			$(".playerListSelect").change(function(event) {
+				var option = $(this).val();
+				var position = $(this).data('position');
+				var id = (position != 'All') ? PlayerListNamespace.LookupId(position) : null;
+				var rowCount = (option != 'All') ? option : null;
+				PlayerListNamespace.GetAvailablePlayers(id, rowCount);
+			});
+
+			$("#draftPickSelect").change(function(event) {
+				var option = $(this).val();
+				var fantasyTeam = (option != 'All') ? option : null;
+				PlayerListNamespace.GetDraftPicks(fantasyTeam);
+			});
+		});
+	</script>
+}
+
+<h2>Available Players</h2>
+
+<div id="tabs">
+	  <ul>
+		<li><a href="#tabs-0">Best Available</a></li>
+		<li><a href="#tabs-1">QBs</a></li>
+		<li><a href="#tabs-2">RBs</a></li>
+		<li><a href="#tabs-3">WRs/TEs</a></li>
+		<li><a href="#tabs-5">Kickers</a></li>
+		<li><a href="#tabs-6">Defenses</a></li>
+		<li><a href="#tabs-7">Bye Weeks</a></li>
+		<li><a href="#tabs-8">Draft Picks</a></li>
+		<li><a href="#tabs-9">Draft Order</a></li>
+	  </ul>
+	<div id="tabs-0">
+		@Html.Partial("PlayerList", "All")
+	</div>
+	<div id="tabs-1">
+		@Html.Partial("PlayerList", "QB")
+	</div>
+	<div id="tabs-2">
+		@Html.Partial("PlayerList", "RB")
+	</div>
+	<div id="tabs-3">
+		@Html.Partial("PlayerList", "WR")
+	</div>
+	<div id="tabs-5">
+		@Html.Partial("PlayerList", "K")
+	</div>
+	<div id="tabs-6">
+		@Html.Partial("PlayerList", "DST")
+	</div>
+	<div id="tabs-7">
+		<!-- ko foreach: ByeWeeks -->
+		<span data-bind="text: WeekNumber"></span>
+		<ul>
+		<!-- ko foreach: Teams-->
+		<li data-bind="text: TeamName"></li>
+		<!-- /ko -->			
+		</ul>
+		<!-- /ko -->
+	</div>
+	<div id="tabs-8">
+		@Html.Partial("DraftPickList")
+	</div>
+	<div id="tabs-9">
+		@Html.Partial("DraftOrder")
+	</div>
+</div>
+

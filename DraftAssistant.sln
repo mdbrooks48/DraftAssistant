@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2012 for Web
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DraftAssistant.DataAccess", "DraftAssistant.DataAccess\DraftAssistant.DataAccess.csproj", "{4C0A4F13-83F9-4AA9-9F2C-1C5837631C1B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DraftAssistant.Web", "DraftAssistant.Web\DraftAssistant.Web.csproj", "{BD6601F7-41F2-487C-9DEA-119E0063986F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4C0A4F13-83F9-4AA9-9F2C-1C5837631C1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C0A4F13-83F9-4AA9-9F2C-1C5837631C1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C0A4F13-83F9-4AA9-9F2C-1C5837631C1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C0A4F13-83F9-4AA9-9F2C-1C5837631C1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD6601F7-41F2-487C-9DEA-119E0063986F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD6601F7-41F2-487C-9DEA-119E0063986F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD6601F7-41F2-487C-9DEA-119E0063986F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD6601F7-41F2-487C-9DEA-119E0063986F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

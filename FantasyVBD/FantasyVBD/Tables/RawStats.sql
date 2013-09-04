@@ -1,0 +1,28 @@
+﻿CREATE TABLE [dbo].[RawStats]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
+    [PlayerKey] VARCHAR(50) NULL, 
+    [KeeperTeam] VARCHAR(50) NULL, 
+    [LastName] VARCHAR(50) NULL, 
+    [FirstName] VARCHAR(50) NULL, 
+    [PositionType] CHAR(3) NULL, 
+    [TeamCode] CHAR(5) NULL, 
+    [ByeWeek] SMALLINT NULL, 
+    [Attempts] DECIMAL(18, 1) NULL, 
+    [Completions] DECIMAL(18, 1) NULL, 
+    [PassingYards] DECIMAL(18, 1) NULL, 
+    [PassingTDs] DECIMAL(18, 1) NULL, 
+    [Interceptions] DECIMAL(18, 1) NULL, 
+    [PasserRating] DECIMAL(18, 1) NULL, 
+    [RushAttempts] DECIMAL(18, 1) NULL, 
+    [RushYards] DECIMAL(18, 1) NULL, 
+    [RushAvg] DECIMAL(18, 1) NULL, 
+    [RushingTDs] DECIMAL(18, 1) NULL, 
+    [Targets] DECIMAL(18, 1) NULL, 
+    [Receptions] DECIMAL(18, 1) NULL, 
+    [ReceivingYards] DECIMAL(18, 1) NULL, 
+    [ReceivingAvg] DECIMAL(18, 1) NULL, 
+    [ReceivingTDs] DECIMAL(18, 1) NULL, 
+    [FumblesLost] DECIMAL(18, 1) NULL, 
+    [FantasyPoints] DECIMAL(18, 1) NULL
+)

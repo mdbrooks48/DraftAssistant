@@ -1,0 +1,1003 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="FantasyVBDModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityContainer Name="FantasyVBDModelStoreContainer">
+          <EntitySet Name="ByeWeek" EntityType="FantasyVBDModel.Store.ByeWeek" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="DraftPicks" EntityType="FantasyVBDModel.Store.DraftPicks" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="FantasyTeam" EntityType="FantasyVBDModel.Store.FantasyTeam" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="League" EntityType="FantasyVBDModel.Store.League" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="LeagueYear" EntityType="FantasyVBDModel.Store.LeagueYear" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="LeagueYearDraftOrder" EntityType="FantasyVBDModel.Store.LeagueYearDraftOrder" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="LeagueYearPosition" EntityType="FantasyVBDModel.Store.LeagueYearPosition" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Player" EntityType="FantasyVBDModel.Store.Player" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="PlayerProjection" EntityType="FantasyVBDModel.Store.PlayerProjection" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Team" EntityType="FantasyVBDModel.Store.Team" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="TeamByeWeek" EntityType="FantasyVBDModel.Store.TeamByeWeek" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Trades" EntityType="FantasyVBDModel.Store.Trades" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_DraftPicks_ToFantasyTeam" Association="FantasyVBDModel.Store.FK_DraftPicks_ToFantasyTeam">
+            <End Role="FantasyTeam" EntitySet="FantasyTeam" />
+            <End Role="DraftPicks" EntitySet="DraftPicks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DraftPicks_ToLeagueYear" Association="FantasyVBDModel.Store.FK_DraftPicks_ToLeagueYear">
+            <End Role="LeagueYear" EntitySet="LeagueYear" />
+            <End Role="DraftPicks" EntitySet="DraftPicks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DraftPicks_ToPlayer" Association="FantasyVBDModel.Store.FK_DraftPicks_ToPlayer">
+            <End Role="Player" EntitySet="Player" />
+            <End Role="DraftPicks" EntitySet="DraftPicks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LeagueYear_ToLeague" Association="FantasyVBDModel.Store.FK_LeagueYear_ToLeague">
+            <End Role="League" EntitySet="League" />
+            <End Role="LeagueYear" EntitySet="LeagueYear" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LeagueYearDraftOrder_ToFantasyTeam" Association="FantasyVBDModel.Store.FK_LeagueYearDraftOrder_ToFantasyTeam">
+            <End Role="FantasyTeam" EntitySet="FantasyTeam" />
+            <End Role="LeagueYearDraftOrder" EntitySet="LeagueYearDraftOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LeagueYearDraftOrder_ToLeagueYear" Association="FantasyVBDModel.Store.FK_LeagueYearDraftOrder_ToLeagueYear">
+            <End Role="LeagueYear" EntitySet="LeagueYear" />
+            <End Role="LeagueYearDraftOrder" EntitySet="LeagueYearDraftOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LeagueYearPosition_ToLeagueYear" Association="FantasyVBDModel.Store.FK_LeagueYearPosition_ToLeagueYear">
+            <End Role="LeagueYear" EntitySet="LeagueYear" />
+            <End Role="LeagueYearPosition" EntitySet="LeagueYearPosition" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Player_ToTeam" Association="FantasyVBDModel.Store.FK_Player_ToTeam">
+            <End Role="Team" EntitySet="Team" />
+            <End Role="Player" EntitySet="Player" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PlayerProjection_ToLeagueYear" Association="FantasyVBDModel.Store.FK_PlayerProjection_ToLeagueYear">
+            <End Role="LeagueYear" EntitySet="LeagueYear" />
+            <End Role="PlayerProjection" EntitySet="PlayerProjection" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PlayerProjection_ToPlayer" Association="FantasyVBDModel.Store.FK_PlayerProjection_ToPlayer">
+            <End Role="Player" EntitySet="Player" />
+            <End Role="PlayerProjection" EntitySet="PlayerProjection" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TeamByeWeek_ToLeagueYear" Association="FantasyVBDModel.Store.FK_TeamByeWeek_ToLeagueYear">
+            <End Role="LeagueYear" EntitySet="LeagueYear" />
+            <End Role="TeamByeWeek" EntitySet="TeamByeWeek" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TeamByeWeek_ToTable" Association="FantasyVBDModel.Store.FK_TeamByeWeek_ToTable">
+            <End Role="ByeWeek" EntitySet="ByeWeek" />
+            <End Role="TeamByeWeek" EntitySet="TeamByeWeek" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TeamByeWeek_ToTeam" Association="FantasyVBDModel.Store.FK_TeamByeWeek_ToTeam">
+            <End Role="Team" EntitySet="Team" />
+            <End Role="TeamByeWeek" EntitySet="TeamByeWeek" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Trades_ToLeagueYear" Association="FantasyVBDModel.Store.FK_Trades_ToLeagueYear">
+            <End Role="LeagueYear" EntitySet="LeagueYear" />
+            <End Role="Trades" EntitySet="Trades" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Trades_ToTradeeFantasyTeam" Association="FantasyVBDModel.Store.FK_Trades_ToTradeeFantasyTeam">
+            <End Role="FantasyTeam" EntitySet="FantasyTeam" />
+            <End Role="Trades" EntitySet="Trades" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Trades_ToTraderFantasyTeam" Association="FantasyVBDModel.Store.FK_Trades_ToTraderFantasyTeam">
+            <End Role="FantasyTeam" EntitySet="FantasyTeam" />
+            <End Role="Trades" EntitySet="Trades" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="ByeWeek">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="WeekNumber" Type="smallint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DraftPicks">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="LeagueYearId" Type="int" Nullable="false" />
+          <Property Name="FantasyTeamId" Type="int" Nullable="false" />
+          <Property Name="PlayerId" Type="int" Nullable="false" />
+          <Property Name="IsKeeper" Type="bit" Nullable="false" />
+          <Property Name="RoundNumber" Type="int" />
+        </EntityType>
+        <EntityType Name="FantasyTeam">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" />
+          <Property Name="OwnerName" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="League">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="LeagueYear">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="LeagueId" Type="int" Nullable="false" />
+          <Property Name="Season" Type="char" MaxLength="4" />
+        </EntityType>
+        <EntityType Name="LeagueYearDraftOrder">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="FantasyTeamId" Type="int" Nullable="false" />
+          <Property Name="LeagueYearId" Type="int" Nullable="false" />
+          <Property Name="Position" Type="smallint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LeagueYearPosition">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="LeagueYearId" Type="int" Nullable="false" />
+          <Property Name="PositionId" Type="int" Nullable="false" />
+          <Property Name="NumberOfStarters" Type="smallint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Player">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="varchar" MaxLength="50" />
+          <Property Name="LastName" Type="varchar" MaxLength="50" />
+          <Property Name="PositionId" Type="int" Nullable="false" />
+          <Property Name="TeamId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PlayerProjection">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="LeagueYearId" Type="int" Nullable="false" />
+          <Property Name="PlayerId" Type="int" Nullable="false" />
+          <Property Name="Attempts" Type="decimal" Scale="1" />
+          <Property Name="Completions" Type="decimal" Scale="1" />
+          <Property Name="PassingYards" Type="decimal" Scale="1" />
+          <Property Name="PassingTDs" Type="decimal" Scale="1" />
+          <Property Name="PassingAvg" Type="decimal" Scale="1" />
+          <Property Name="Interceptions" Type="decimal" Scale="1" />
+          <Property Name="PasserRating" Type="decimal" Scale="1" />
+          <Property Name="RushAttempts" Type="decimal" Scale="1" />
+          <Property Name="RushYards" Type="decimal" Scale="1" />
+          <Property Name="RushAvg" Type="decimal" Scale="1" />
+          <Property Name="RushingTDs" Type="decimal" Scale="1" />
+          <Property Name="Targets" Type="decimal" Scale="1" />
+          <Property Name="Receptions" Type="decimal" Scale="1" />
+          <Property Name="ReceivingYards" Type="decimal" Scale="1" />
+          <Property Name="ReceivingAvg" Type="decimal" Scale="1" />
+          <Property Name="ReceivingTDs" Type="decimal" Scale="1" />
+          <Property Name="FumblesLost" Type="decimal" Scale="1" />
+          <Property Name="FantasyPoints" Type="decimal" Scale="1" />
+          <Property Name="Rank" Type="int" />
+          <Property Name="ValuePoints" Type="decimal" Scale="1" />
+          <Property Name="ValueDeltaPoints" Type="decimal" Scale="1" />
+          <Property Name="YardageBonusPoints" Type="decimal" Scale="1" />
+        </EntityType>
+        <EntityType Name="Team">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" />
+          <Property Name="TeamCode" Type="char" MaxLength="3" />
+        </EntityType>
+        <EntityType Name="TeamByeWeek">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="TeamId" Type="int" Nullable="false" />
+          <Property Name="ByeWeekId" Type="int" Nullable="false" />
+          <Property Name="LeagueYearId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Trades">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="LeagueYearId" Type="int" />
+          <Property Name="TraderFantasyTeamId" Type="int" />
+          <Property Name="DraftRound" Type="smallint" />
+          <Property Name="TradeeFantasyTeamId" Type="int" />
+        </EntityType>
+        <Association Name="FK_DraftPicks_ToFantasyTeam">
+          <End Role="FantasyTeam" Type="FantasyVBDModel.Store.FantasyTeam" Multiplicity="1" />
+          <End Role="DraftPicks" Type="FantasyVBDModel.Store.DraftPicks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FantasyTeam">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DraftPicks">
+              <PropertyRef Name="FantasyTeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DraftPicks_ToLeagueYear">
+          <End Role="LeagueYear" Type="FantasyVBDModel.Store.LeagueYear" Multiplicity="1" />
+          <End Role="DraftPicks" Type="FantasyVBDModel.Store.DraftPicks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LeagueYear">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DraftPicks">
+              <PropertyRef Name="LeagueYearId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DraftPicks_ToPlayer">
+          <End Role="Player" Type="FantasyVBDModel.Store.Player" Multiplicity="1" />
+          <End Role="DraftPicks" Type="FantasyVBDModel.Store.DraftPicks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DraftPicks">
+              <PropertyRef Name="PlayerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LeagueYear_ToLeague">
+          <End Role="League" Type="FantasyVBDModel.Store.League" Multiplicity="1" />
+          <End Role="LeagueYear" Type="FantasyVBDModel.Store.LeagueYear" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="League">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="LeagueYear">
+              <PropertyRef Name="LeagueId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LeagueYearDraftOrder_ToFantasyTeam">
+          <End Role="FantasyTeam" Type="FantasyVBDModel.Store.FantasyTeam" Multiplicity="1" />
+          <End Role="LeagueYearDraftOrder" Type="FantasyVBDModel.Store.LeagueYearDraftOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FantasyTeam">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="LeagueYearDraftOrder">
+              <PropertyRef Name="FantasyTeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LeagueYearDraftOrder_ToLeagueYear">
+          <End Role="LeagueYear" Type="FantasyVBDModel.Store.LeagueYear" Multiplicity="1" />
+          <End Role="LeagueYearDraftOrder" Type="FantasyVBDModel.Store.LeagueYearDraftOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LeagueYear">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="LeagueYearDraftOrder">
+              <PropertyRef Name="LeagueYearId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LeagueYearPosition_ToLeagueYear">
+          <End Role="LeagueYear" Type="FantasyVBDModel.Store.LeagueYear" Multiplicity="1" />
+          <End Role="LeagueYearPosition" Type="FantasyVBDModel.Store.LeagueYearPosition" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LeagueYear">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="LeagueYearPosition">
+              <PropertyRef Name="LeagueYearId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Player_ToTeam">
+          <End Role="Team" Type="FantasyVBDModel.Store.Team" Multiplicity="1" />
+          <End Role="Player" Type="FantasyVBDModel.Store.Player" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Team">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Player">
+              <PropertyRef Name="TeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PlayerProjection_ToLeagueYear">
+          <End Role="LeagueYear" Type="FantasyVBDModel.Store.LeagueYear" Multiplicity="1" />
+          <End Role="PlayerProjection" Type="FantasyVBDModel.Store.PlayerProjection" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LeagueYear">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PlayerProjection">
+              <PropertyRef Name="LeagueYearId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PlayerProjection_ToPlayer">
+          <End Role="Player" Type="FantasyVBDModel.Store.Player" Multiplicity="1" />
+          <End Role="PlayerProjection" Type="FantasyVBDModel.Store.PlayerProjection" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PlayerProjection">
+              <PropertyRef Name="PlayerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TeamByeWeek_ToLeagueYear">
+          <End Role="LeagueYear" Type="FantasyVBDModel.Store.LeagueYear" Multiplicity="1" />
+          <End Role="TeamByeWeek" Type="FantasyVBDModel.Store.TeamByeWeek" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LeagueYear">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TeamByeWeek">
+              <PropertyRef Name="LeagueYearId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TeamByeWeek_ToTable">
+          <End Role="ByeWeek" Type="FantasyVBDModel.Store.ByeWeek" Multiplicity="1" />
+          <End Role="TeamByeWeek" Type="FantasyVBDModel.Store.TeamByeWeek" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ByeWeek">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TeamByeWeek">
+              <PropertyRef Name="ByeWeekId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TeamByeWeek_ToTeam">
+          <End Role="Team" Type="FantasyVBDModel.Store.Team" Multiplicity="1" />
+          <End Role="TeamByeWeek" Type="FantasyVBDModel.Store.TeamByeWeek" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Team">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TeamByeWeek">
+              <PropertyRef Name="TeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Trades_ToLeagueYear">
+          <End Role="LeagueYear" Type="FantasyVBDModel.Store.LeagueYear" Multiplicity="0..1" />
+          <End Role="Trades" Type="FantasyVBDModel.Store.Trades" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LeagueYear">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Trades">
+              <PropertyRef Name="LeagueYearId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Trades_ToTradeeFantasyTeam">
+          <End Role="FantasyTeam" Type="FantasyVBDModel.Store.FantasyTeam" Multiplicity="0..1" />
+          <End Role="Trades" Type="FantasyVBDModel.Store.Trades" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FantasyTeam">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Trades">
+              <PropertyRef Name="TradeeFantasyTeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Trades_ToTraderFantasyTeam">
+          <End Role="FantasyTeam" Type="FantasyVBDModel.Store.FantasyTeam" Multiplicity="0..1" />
+          <End Role="Trades" Type="FantasyVBDModel.Store.Trades" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FantasyTeam">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Trades">
+              <PropertyRef Name="TraderFantasyTeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="FantasyVBDModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="FantasyVBDEntities" p1:LazyLoadingEnabled="true">
+          <EntitySet Name="ByeWeeks" EntityType="FantasyVBDModel.ByeWeek" />
+          <EntitySet Name="DraftPicks" EntityType="FantasyVBDModel.DraftPick" />
+          <EntitySet Name="FantasyTeams" EntityType="FantasyVBDModel.FantasyTeam" />
+          <EntitySet Name="Leagues" EntityType="FantasyVBDModel.League" />
+          <EntitySet Name="LeagueYears" EntityType="FantasyVBDModel.LeagueYear" />
+          <EntitySet Name="LeagueYearDraftOrders" EntityType="FantasyVBDModel.LeagueYearDraftOrder" />
+          <EntitySet Name="Players" EntityType="FantasyVBDModel.Player" />
+          <EntitySet Name="Teams" EntityType="FantasyVBDModel.Team" />
+          <EntitySet Name="Trades" EntityType="FantasyVBDModel.Trade" />
+          <AssociationSet Name="FK_DraftPicks_ToFantasyTeam" Association="FantasyVBDModel.FK_DraftPicks_ToFantasyTeam">
+            <End Role="FantasyTeam" EntitySet="FantasyTeams" />
+            <End Role="DraftPicks" EntitySet="DraftPicks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DraftPicks_ToLeagueYear" Association="FantasyVBDModel.FK_DraftPicks_ToLeagueYear">
+            <End Role="LeagueYear" EntitySet="LeagueYears" />
+            <End Role="DraftPicks" EntitySet="DraftPicks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DraftPicks_ToPlayer" Association="FantasyVBDModel.FK_DraftPicks_ToPlayer">
+            <End Role="Player" EntitySet="Players" />
+            <End Role="DraftPicks" EntitySet="DraftPicks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LeagueYearDraftOrder_ToFantasyTeam" Association="FantasyVBDModel.FK_LeagueYearDraftOrder_ToFantasyTeam">
+            <End Role="FantasyTeam" EntitySet="FantasyTeams" />
+            <End Role="LeagueYearDraftOrder" EntitySet="LeagueYearDraftOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Trades_ToTradeeFantasyTeam" Association="FantasyVBDModel.FK_Trades_ToTradeeFantasyTeam">
+            <End Role="FantasyTeam" EntitySet="FantasyTeams" />
+            <End Role="Trades" EntitySet="Trades" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Trades_ToTraderFantasyTeam" Association="FantasyVBDModel.FK_Trades_ToTraderFantasyTeam">
+            <End Role="FantasyTeam" EntitySet="FantasyTeams" />
+            <End Role="Trades" EntitySet="Trades" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LeagueYear_ToLeague" Association="FantasyVBDModel.FK_LeagueYear_ToLeague">
+            <End Role="League" EntitySet="Leagues" />
+            <End Role="LeagueYear" EntitySet="LeagueYears" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LeagueYearDraftOrder_ToLeagueYear" Association="FantasyVBDModel.FK_LeagueYearDraftOrder_ToLeagueYear">
+            <End Role="LeagueYear" EntitySet="LeagueYears" />
+            <End Role="LeagueYearDraftOrder" EntitySet="LeagueYearDraftOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Trades_ToLeagueYear" Association="FantasyVBDModel.FK_Trades_ToLeagueYear">
+            <End Role="LeagueYear" EntitySet="LeagueYears" />
+            <End Role="Trades" EntitySet="Trades" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Player_ToTeam" Association="FantasyVBDModel.FK_Player_ToTeam">
+            <End Role="Team" EntitySet="Teams" />
+            <End Role="Player" EntitySet="Players" />
+          </AssociationSet>
+          <EntitySet Name="PlayerProjections" EntityType="FantasyVBDModel.PlayerProjection" />
+          <AssociationSet Name="FK_PlayerProjection_ToLeagueYear" Association="FantasyVBDModel.FK_PlayerProjection_ToLeagueYear">
+            <End Role="LeagueYear" EntitySet="LeagueYears" />
+            <End Role="PlayerProjection" EntitySet="PlayerProjections" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PlayerProjection_ToPlayer" Association="FantasyVBDModel.FK_PlayerProjection_ToPlayer">
+            <End Role="Player" EntitySet="Players" />
+            <End Role="PlayerProjection" EntitySet="PlayerProjections" />
+          </AssociationSet>
+          <EntitySet Name="LeagueYearPositions" EntityType="FantasyVBDModel.LeagueYearPosition" />
+          <AssociationSet Name="FK_LeagueYearPosition_ToLeagueYear" Association="FantasyVBDModel.FK_LeagueYearPosition_ToLeagueYear">
+            <End Role="LeagueYear" EntitySet="LeagueYears" />
+            <End Role="LeagueYearPosition" EntitySet="LeagueYearPositions" />
+          </AssociationSet>
+          <EntitySet Name="TeamByeWeeks" EntityType="FantasyVBDModel.TeamByeWeek" />
+          <AssociationSet Name="FK_TeamByeWeek_ToTable" Association="FantasyVBDModel.FK_TeamByeWeek_ToTable">
+            <End Role="ByeWeek" EntitySet="ByeWeeks" />
+            <End Role="TeamByeWeek" EntitySet="TeamByeWeeks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TeamByeWeek_ToLeagueYear" Association="FantasyVBDModel.FK_TeamByeWeek_ToLeagueYear">
+            <End Role="LeagueYear" EntitySet="LeagueYears" />
+            <End Role="TeamByeWeek" EntitySet="TeamByeWeeks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TeamByeWeek_ToTeam" Association="FantasyVBDModel.FK_TeamByeWeek_ToTeam">
+            <End Role="Team" EntitySet="Teams" />
+            <End Role="TeamByeWeek" EntitySet="TeamByeWeeks" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="ByeWeek">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="WeekNumber" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="TeamByeWeeks" Relationship="FantasyVBDModel.FK_TeamByeWeek_ToTable" FromRole="ByeWeek" ToRole="TeamByeWeek" />
+        </EntityType>
+        <EntityType Name="DraftPick">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="LeagueYearId" Type="Int32" Nullable="false" />
+          <Property Name="FantasyTeamId" Type="Int32" Nullable="false" />
+          <Property Name="PlayerId" Type="Int32" Nullable="false" />
+          <Property Name="IsKeeper" Type="Boolean" Nullable="false" />
+          <Property Name="RoundNumber" Type="Int32" />
+          <NavigationProperty Name="FantasyTeam" Relationship="FantasyVBDModel.FK_DraftPicks_ToFantasyTeam" FromRole="DraftPicks" ToRole="FantasyTeam" />
+          <NavigationProperty Name="LeagueYear" Relationship="FantasyVBDModel.FK_DraftPicks_ToLeagueYear" FromRole="DraftPicks" ToRole="LeagueYear" />
+          <NavigationProperty Name="Player" Relationship="FantasyVBDModel.FK_DraftPicks_ToPlayer" FromRole="DraftPicks" ToRole="Player" />
+        </EntityType>
+        <EntityType Name="FantasyTeam">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+          <Property Name="OwnerName" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+          <NavigationProperty Name="DraftPicks" Relationship="FantasyVBDModel.FK_DraftPicks_ToFantasyTeam" FromRole="FantasyTeam" ToRole="DraftPicks" />
+          <NavigationProperty Name="LeagueYearDraftOrders" Relationship="FantasyVBDModel.FK_LeagueYearDraftOrder_ToFantasyTeam" FromRole="FantasyTeam" ToRole="LeagueYearDraftOrder" />
+          <NavigationProperty Name="Tradees" Relationship="FantasyVBDModel.FK_Trades_ToTradeeFantasyTeam" FromRole="FantasyTeam" ToRole="Trades" />
+          <NavigationProperty Name="Traders" Relationship="FantasyVBDModel.FK_Trades_ToTraderFantasyTeam" FromRole="FantasyTeam" ToRole="Trades" />
+        </EntityType>
+        <EntityType Name="League">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+          <NavigationProperty Name="LeagueYears" Relationship="FantasyVBDModel.FK_LeagueYear_ToLeague" FromRole="League" ToRole="LeagueYear" />
+        </EntityType>
+        <EntityType Name="LeagueYear">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="LeagueId" Type="Int32" Nullable="false" />
+          <Property Name="Season" Type="String" MaxLength="4" Unicode="false" FixedLength="true" />
+          <NavigationProperty Name="DraftPicks" Relationship="FantasyVBDModel.FK_DraftPicks_ToLeagueYear" FromRole="LeagueYear" ToRole="DraftPicks" />
+          <NavigationProperty Name="League" Relationship="FantasyVBDModel.FK_LeagueYear_ToLeague" FromRole="LeagueYear" ToRole="League" />
+          <NavigationProperty Name="LeagueYearDraftOrders" Relationship="FantasyVBDModel.FK_LeagueYearDraftOrder_ToLeagueYear" FromRole="LeagueYear" ToRole="LeagueYearDraftOrder" />
+          <NavigationProperty Name="Trades" Relationship="FantasyVBDModel.FK_Trades_ToLeagueYear" FromRole="LeagueYear" ToRole="Trades" />
+          <NavigationProperty Name="PlayerProjections" Relationship="FantasyVBDModel.FK_PlayerProjection_ToLeagueYear" FromRole="LeagueYear" ToRole="PlayerProjection" />
+          <NavigationProperty Name="LeagueYearPositions" Relationship="FantasyVBDModel.FK_LeagueYearPosition_ToLeagueYear" FromRole="LeagueYear" ToRole="LeagueYearPosition" />
+          <NavigationProperty Name="TeamByeWeeks" Relationship="FantasyVBDModel.FK_TeamByeWeek_ToLeagueYear" FromRole="LeagueYear" ToRole="TeamByeWeek" />
+        </EntityType>
+        <EntityType Name="LeagueYearDraftOrder">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="FantasyTeamId" Type="Int32" Nullable="false" />
+          <Property Name="LeagueYearId" Type="Int32" Nullable="false" />
+          <Property Name="Position" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="FantasyTeam" Relationship="FantasyVBDModel.FK_LeagueYearDraftOrder_ToFantasyTeam" FromRole="LeagueYearDraftOrder" ToRole="FantasyTeam" />
+          <NavigationProperty Name="LeagueYear" Relationship="FantasyVBDModel.FK_LeagueYearDraftOrder_ToLeagueYear" FromRole="LeagueYearDraftOrder" ToRole="LeagueYear" />
+        </EntityType>
+        <EntityType Name="Player">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+          <Property Name="PositionType" Type="FantasyVBDModel.PositionType" Nullable="false" />
+          <Property Name="TeamId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="DraftPicks" Relationship="FantasyVBDModel.FK_DraftPicks_ToPlayer" FromRole="Player" ToRole="DraftPicks" />
+          <NavigationProperty Name="Team" Relationship="FantasyVBDModel.FK_Player_ToTeam" FromRole="Player" ToRole="Team" />
+          <NavigationProperty Name="PlayerProjections" Relationship="FantasyVBDModel.FK_PlayerProjection_ToPlayer" FromRole="Player" ToRole="PlayerProjection" />
+        </EntityType>
+        <EntityType Name="Team">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+          <Property Name="TeamCode" Type="String" MaxLength="3" Unicode="false" FixedLength="true" />
+          <NavigationProperty Name="Players" Relationship="FantasyVBDModel.FK_Player_ToTeam" FromRole="Team" ToRole="Player" />
+          <NavigationProperty Name="TeamByeWeeks" Relationship="FantasyVBDModel.FK_TeamByeWeek_ToTeam" FromRole="Team" ToRole="TeamByeWeek" />
+        </EntityType>
+        <EntityType Name="Trade">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="LeagueYearId" Type="Int32" />
+          <Property Name="TraderFantasyTeamId" Type="Int32" />
+          <Property Name="DraftRound" Type="Int16" />
+          <Property Name="TradeeFantasyTeamId" Type="Int32" />
+          <NavigationProperty Name="FantasyTeam" Relationship="FantasyVBDModel.FK_Trades_ToTradeeFantasyTeam" FromRole="Trades" ToRole="FantasyTeam" />
+          <NavigationProperty Name="FantasyTeam1" Relationship="FantasyVBDModel.FK_Trades_ToTraderFantasyTeam" FromRole="Trades" ToRole="FantasyTeam" />
+          <NavigationProperty Name="LeagueYear" Relationship="FantasyVBDModel.FK_Trades_ToLeagueYear" FromRole="Trades" ToRole="LeagueYear" />
+        </EntityType>
+        <Association Name="FK_DraftPicks_ToFantasyTeam">
+          <End Role="FantasyTeam" Type="FantasyVBDModel.FantasyTeam" Multiplicity="1" />
+          <End Role="DraftPicks" Type="FantasyVBDModel.DraftPick" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FantasyTeam">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DraftPicks">
+              <PropertyRef Name="FantasyTeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DraftPicks_ToLeagueYear">
+          <End Role="LeagueYear" Type="FantasyVBDModel.LeagueYear" Multiplicity="1" />
+          <End Role="DraftPicks" Type="FantasyVBDModel.DraftPick" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LeagueYear">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DraftPicks">
+              <PropertyRef Name="LeagueYearId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DraftPicks_ToPlayer">
+          <End Role="Player" Type="FantasyVBDModel.Player" Multiplicity="1" />
+          <End Role="DraftPicks" Type="FantasyVBDModel.DraftPick" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DraftPicks">
+              <PropertyRef Name="PlayerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LeagueYearDraftOrder_ToFantasyTeam">
+          <End Role="FantasyTeam" Type="FantasyVBDModel.FantasyTeam" Multiplicity="1" />
+          <End Role="LeagueYearDraftOrder" Type="FantasyVBDModel.LeagueYearDraftOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FantasyTeam">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="LeagueYearDraftOrder">
+              <PropertyRef Name="FantasyTeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Trades_ToTradeeFantasyTeam">
+          <End Role="FantasyTeam" Type="FantasyVBDModel.FantasyTeam" Multiplicity="0..1" />
+          <End Role="Trades" Type="FantasyVBDModel.Trade" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FantasyTeam">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Trades">
+              <PropertyRef Name="TradeeFantasyTeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Trades_ToTraderFantasyTeam">
+          <End Role="FantasyTeam" Type="FantasyVBDModel.FantasyTeam" Multiplicity="0..1" />
+          <End Role="Trades" Type="FantasyVBDModel.Trade" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FantasyTeam">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Trades">
+              <PropertyRef Name="TraderFantasyTeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LeagueYear_ToLeague">
+          <End Role="League" Type="FantasyVBDModel.League" Multiplicity="1" />
+          <End Role="LeagueYear" Type="FantasyVBDModel.LeagueYear" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="League">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="LeagueYear">
+              <PropertyRef Name="LeagueId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LeagueYearDraftOrder_ToLeagueYear">
+          <End Role="LeagueYear" Type="FantasyVBDModel.LeagueYear" Multiplicity="1" />
+          <End Role="LeagueYearDraftOrder" Type="FantasyVBDModel.LeagueYearDraftOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LeagueYear">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="LeagueYearDraftOrder">
+              <PropertyRef Name="LeagueYearId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Trades_ToLeagueYear">
+          <End Role="LeagueYear" Type="FantasyVBDModel.LeagueYear" Multiplicity="0..1" />
+          <End Role="Trades" Type="FantasyVBDModel.Trade" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LeagueYear">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Trades">
+              <PropertyRef Name="LeagueYearId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Player_ToTeam">
+          <End Role="Team" Type="FantasyVBDModel.Team" Multiplicity="1" />
+          <End Role="Player" Type="FantasyVBDModel.Player" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Team">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Player">
+              <PropertyRef Name="TeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EnumType Name="PositionType" a:ExternalTypeName="DraftAssistant.DataAccess.Enums.PositionType" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <EntityType Name="PlayerProjection">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="LeagueYearId" Nullable="false" />
+          <Property Type="Int32" Name="PlayerId" Nullable="false" />
+          <Property Type="Decimal" Name="Attempts" Precision="18" Scale="1" />
+          <Property Type="Decimal" Name="Completions" Precision="18" Scale="1" />
+          <Property Type="Decimal" Name="PassingYards" Precision="18" Scale="1" />
+          <Property Type="Decimal" Name="PassingTDs" Precision="18" Scale="1" />
+          <Property Type="Decimal" Name="Interceptions" Precision="18" Scale="1" />
+          <Property Type="Decimal" Name="PasserRating" Precision="18" Scale="1" />
+          <Property Type="Decimal" Name="RushAttempts" Precision="18" Scale="1" />
+          <Property Type="Decimal" Name="RushYards" Precision="18" Scale="1" />
+          <Property Type="Decimal" Name="RushAvg" Precision="18" Scale="1" />
+          <Property Type="Decimal" Name="RushingTDs" Precision="18" Scale="1" />
+          <Property Type="Decimal" Name="Targets" Precision="18" Scale="1" />
+          <Property Type="Decimal" Name="Receptions" Precision="18" Scale="1" />
+          <Property Type="Decimal" Name="ReceivingYards" Precision="18" Scale="1" />
+          <Property Type="Decimal" Name="ReceivingAvg" Precision="18" Scale="1" />
+          <Property Type="Decimal" Name="ReceivingTDs" Precision="18" Scale="1" />
+          <Property Type="Decimal" Name="FumblesLost" Precision="18" Scale="1" />
+          <Property Type="Decimal" Name="FantasyPoints" Precision="18" Scale="1" />
+          <NavigationProperty Name="LeagueYear" Relationship="FantasyVBDModel.FK_PlayerProjection_ToLeagueYear" FromRole="PlayerProjection" ToRole="LeagueYear" />
+          <NavigationProperty Name="Player" Relationship="FantasyVBDModel.FK_PlayerProjection_ToPlayer" FromRole="PlayerProjection" ToRole="Player" />
+          <Property Type="Int32" Name="Rank" />
+          <Property Type="Decimal" Name="ValuePoints" Precision="18" Scale="1" />
+          <Property Type="Decimal" Name="PassingAvg" Precision="18" Scale="1" />
+          <Property Type="Decimal" Name="ValueDeltaPoints" Precision="18" Scale="1" />
+          <Property Type="Decimal" Name="YardageBonusPoints" Precision="18" Scale="1" />
+        </EntityType>
+        <Association Name="FK_PlayerProjection_ToLeagueYear">
+          <End Type="FantasyVBDModel.LeagueYear" Role="LeagueYear" Multiplicity="1" />
+          <End Type="FantasyVBDModel.PlayerProjection" Role="PlayerProjection" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LeagueYear">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PlayerProjection">
+              <PropertyRef Name="LeagueYearId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PlayerProjection_ToPlayer">
+          <End Type="FantasyVBDModel.Player" Role="Player" Multiplicity="1" />
+          <End Type="FantasyVBDModel.PlayerProjection" Role="PlayerProjection" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PlayerProjection">
+              <PropertyRef Name="PlayerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="LeagueYearPosition">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="LeagueYearId" Nullable="false" />
+          <Property Type="FantasyVBDModel.PositionType" Name="PositionType" Nullable="false" />
+          <Property Type="Int16" Name="NumberOfStarters" Nullable="false" />
+          <NavigationProperty Name="LeagueYear" Relationship="FantasyVBDModel.FK_LeagueYearPosition_ToLeagueYear" FromRole="LeagueYearPosition" ToRole="LeagueYear" />
+        </EntityType>
+        <Association Name="FK_LeagueYearPosition_ToLeagueYear">
+          <End Type="FantasyVBDModel.LeagueYear" Role="LeagueYear" Multiplicity="1" />
+          <End Type="FantasyVBDModel.LeagueYearPosition" Role="LeagueYearPosition" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LeagueYear">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="LeagueYearPosition">
+              <PropertyRef Name="LeagueYearId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="TeamByeWeek">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="TeamId" Nullable="false" />
+          <Property Type="Int32" Name="ByeWeekId" Nullable="false" />
+          <Property Type="Int32" Name="LeagueYearId" Nullable="false" />
+          <NavigationProperty Name="ByeWeek" Relationship="FantasyVBDModel.FK_TeamByeWeek_ToTable" FromRole="TeamByeWeek" ToRole="ByeWeek" />
+          <NavigationProperty Name="LeagueYear" Relationship="FantasyVBDModel.FK_TeamByeWeek_ToLeagueYear" FromRole="TeamByeWeek" ToRole="LeagueYear" />
+          <NavigationProperty Name="Team" Relationship="FantasyVBDModel.FK_TeamByeWeek_ToTeam" FromRole="TeamByeWeek" ToRole="Team" />
+        </EntityType>
+        <Association Name="FK_TeamByeWeek_ToTable">
+          <End Type="FantasyVBDModel.ByeWeek" Role="ByeWeek" Multiplicity="1" />
+          <End Type="FantasyVBDModel.TeamByeWeek" Role="TeamByeWeek" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ByeWeek">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TeamByeWeek">
+              <PropertyRef Name="ByeWeekId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TeamByeWeek_ToLeagueYear">
+          <End Type="FantasyVBDModel.LeagueYear" Role="LeagueYear" Multiplicity="1" />
+          <End Type="FantasyVBDModel.TeamByeWeek" Role="TeamByeWeek" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LeagueYear">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TeamByeWeek">
+              <PropertyRef Name="LeagueYearId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TeamByeWeek_ToTeam">
+          <End Type="FantasyVBDModel.Team" Role="Team" Multiplicity="1" />
+          <End Type="FantasyVBDModel.TeamByeWeek" Role="TeamByeWeek" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Team">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TeamByeWeek">
+              <PropertyRef Name="TeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="FantasyVBDModelStoreContainer" CdmEntityContainer="FantasyVBDEntities">
+          <EntitySetMapping Name="ByeWeeks">
+            <EntityTypeMapping TypeName="FantasyVBDModel.ByeWeek">
+              <MappingFragment StoreEntitySet="ByeWeek">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="WeekNumber" ColumnName="WeekNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DraftPicks">
+            <EntityTypeMapping TypeName="FantasyVBDModel.DraftPick">
+              <MappingFragment StoreEntitySet="DraftPicks">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="LeagueYearId" ColumnName="LeagueYearId" />
+                <ScalarProperty Name="FantasyTeamId" ColumnName="FantasyTeamId" />
+                <ScalarProperty Name="PlayerId" ColumnName="PlayerId" />
+                <ScalarProperty Name="IsKeeper" ColumnName="IsKeeper" />
+                <ScalarProperty Name="RoundNumber" ColumnName="RoundNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FantasyTeams">
+            <EntityTypeMapping TypeName="FantasyVBDModel.FantasyTeam">
+              <MappingFragment StoreEntitySet="FantasyTeam">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="OwnerName" ColumnName="OwnerName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Leagues">
+            <EntityTypeMapping TypeName="FantasyVBDModel.League">
+              <MappingFragment StoreEntitySet="League">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LeagueYears">
+            <EntityTypeMapping TypeName="FantasyVBDModel.LeagueYear">
+              <MappingFragment StoreEntitySet="LeagueYear">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="LeagueId" ColumnName="LeagueId" />
+                <ScalarProperty Name="Season" ColumnName="Season" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LeagueYearDraftOrders">
+            <EntityTypeMapping TypeName="FantasyVBDModel.LeagueYearDraftOrder">
+              <MappingFragment StoreEntitySet="LeagueYearDraftOrder">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FantasyTeamId" ColumnName="FantasyTeamId" />
+                <ScalarProperty Name="LeagueYearId" ColumnName="LeagueYearId" />
+                <ScalarProperty Name="Position" ColumnName="Position" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Players">
+            <EntityTypeMapping TypeName="FantasyVBDModel.Player">
+              <MappingFragment StoreEntitySet="Player">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="PositionType" ColumnName="PositionId" />
+                <ScalarProperty Name="TeamId" ColumnName="TeamId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Teams">
+            <EntityTypeMapping TypeName="FantasyVBDModel.Team">
+              <MappingFragment StoreEntitySet="Team">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="TeamCode" ColumnName="TeamCode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Trades">
+            <EntityTypeMapping TypeName="FantasyVBDModel.Trade">
+              <MappingFragment StoreEntitySet="Trades">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="LeagueYearId" ColumnName="LeagueYearId" />
+                <ScalarProperty Name="TraderFantasyTeamId" ColumnName="TraderFantasyTeamId" />
+                <ScalarProperty Name="DraftRound" ColumnName="DraftRound" />
+                <ScalarProperty Name="TradeeFantasyTeamId" ColumnName="TradeeFantasyTeamId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PlayerProjections">
+            <EntityTypeMapping TypeName="FantasyVBDModel.PlayerProjection">
+              <MappingFragment StoreEntitySet="PlayerProjection">
+                <ScalarProperty Name="YardageBonusPoints" ColumnName="YardageBonusPoints" />
+                <ScalarProperty Name="ValueDeltaPoints" ColumnName="ValueDeltaPoints" />
+                <ScalarProperty Name="PassingAvg" ColumnName="PassingAvg" />
+                <ScalarProperty Name="ValuePoints" ColumnName="ValuePoints" />
+                <ScalarProperty Name="Rank" ColumnName="Rank" />
+                <ScalarProperty Name="FantasyPoints" ColumnName="FantasyPoints" />
+                <ScalarProperty Name="FumblesLost" ColumnName="FumblesLost" />
+                <ScalarProperty Name="ReceivingTDs" ColumnName="ReceivingTDs" />
+                <ScalarProperty Name="ReceivingAvg" ColumnName="ReceivingAvg" />
+                <ScalarProperty Name="ReceivingYards" ColumnName="ReceivingYards" />
+                <ScalarProperty Name="Receptions" ColumnName="Receptions" />
+                <ScalarProperty Name="Targets" ColumnName="Targets" />
+                <ScalarProperty Name="RushingTDs" ColumnName="RushingTDs" />
+                <ScalarProperty Name="RushAvg" ColumnName="RushAvg" />
+                <ScalarProperty Name="RushYards" ColumnName="RushYards" />
+                <ScalarProperty Name="RushAttempts" ColumnName="RushAttempts" />
+                <ScalarProperty Name="PasserRating" ColumnName="PasserRating" />
+                <ScalarProperty Name="Interceptions" ColumnName="Interceptions" />
+                <ScalarProperty Name="PassingTDs" ColumnName="PassingTDs" />
+                <ScalarProperty Name="PassingYards" ColumnName="PassingYards" />
+                <ScalarProperty Name="Completions" ColumnName="Completions" />
+                <ScalarProperty Name="Attempts" ColumnName="Attempts" />
+                <ScalarProperty Name="PlayerId" ColumnName="PlayerId" />
+                <ScalarProperty Name="LeagueYearId" ColumnName="LeagueYearId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LeagueYearPositions">
+            <EntityTypeMapping TypeName="FantasyVBDModel.LeagueYearPosition">
+              <MappingFragment StoreEntitySet="LeagueYearPosition">
+                <ScalarProperty Name="NumberOfStarters" ColumnName="NumberOfStarters" />
+                <ScalarProperty Name="PositionType" ColumnName="PositionId" />
+                <ScalarProperty Name="LeagueYearId" ColumnName="LeagueYearId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TeamByeWeeks">
+            <EntityTypeMapping TypeName="FantasyVBDModel.TeamByeWeek">
+              <MappingFragment StoreEntitySet="TeamByeWeek">
+                <ScalarProperty Name="LeagueYearId" ColumnName="LeagueYearId" />
+                <ScalarProperty Name="ByeWeekId" ColumnName="ByeWeekId" />
+                <ScalarProperty Name="TeamId" ColumnName="TeamId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

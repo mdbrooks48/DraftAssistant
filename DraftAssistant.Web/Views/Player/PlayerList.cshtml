@@ -1,0 +1,18 @@
+﻿@model string
+<label for="@(Model)Rows">Show:</label><select id="@(Model)Select" class="playerListSelect" data-position="@(Model)"><option>10</option><option>25</option><option>All</option></select>
+<table id="@(Model)Table">
+    <thead><tr>
+		<th>Player</th><th>Team</th><th>Position</th><th>Fantasy Points</th><th>Value Points</th><th>VBD Delta</th>
+    </tr></thead>
+    <!-- Todo: Generate table body -->
+    <tbody data-bind="foreach: @Model">
+        <tr>
+            <td data-bind="text: FullName"></td>
+            <td data-bind="text: TeamName"></td>
+			<td data-bind="text: Position"></td>
+            <td data-bind="text: FantasyPoints" class="textRight"></td>
+            <td data-bind="text: ValuePoints" class="textRight"></td>
+			<td data-bind="text: ValueDelta" class="textRight"></td>
+        </tr>
+    </tbody>
+</table>

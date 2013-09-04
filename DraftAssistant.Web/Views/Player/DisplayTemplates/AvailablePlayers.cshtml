@@ -1,0 +1,22 @@
+﻿@model List<DraftAssistant.DataAccess.Player>
+
+<table id="availablePlayersTable">
+@if (Model != null) {
+	<tr>
+		<th>Player</th>
+		<th>Position</th>
+		<th>Team</th>
+	</tr>
+	foreach (var player in Model)
+	{
+	<tr>
+		<td>@Html.DisplayFor(x => player.LastName), @Html.DisplayFor(x => player.FirstName)</td>
+		<td>@Html.DisplayFor(x => player.PositionType)</td>
+		<td>@Html.DisplayFor(x => player.Team.Name)</td>
+	</tr>
+	}
+}
+else {
+	<td>No Players Available!</td>
+}
+</table>

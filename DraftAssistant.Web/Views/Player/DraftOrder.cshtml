@@ -1,0 +1,12 @@
+﻿<table id="draftOrderTable">
+    <thead><tr>
+		<th>Fantasy Team</th><th>Round Number</th><th>Pick Number</th>
+    </tr></thead>
+    <tbody data-bind="foreach: DraftOrder">
+        <tr>
+            <td data-bind="text: FantasyTeamName"></td>
+            <td data-bind="text: RoundNumber" class="textRight"></td>
+            <td data-bind="text: PickNumber" class="textRight"></td>
+        </tr>
+    </tbody>
+</table>
