@@ -17,5 +17,11 @@ namespace DraftAssistant.DataAccess.Repositories
 		{
 			return _context.Set<DraftPick>().Where(x => x.LeagueYearId == leagueYear.Id).ToList();
 		}
+
+
+		public int GetLastPickNumber(LeagueYear leagueYear)
+		{
+			return _context.Set<DraftPick>().Where(x => x.LeagueYearId == leagueYear.Id).Select(x => (x.PickNumber.HasValue) ? x.PickNumber.Value : 0).Max();
+		}
 	}
 }

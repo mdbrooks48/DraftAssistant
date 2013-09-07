@@ -6,7 +6,12 @@
     [PlayerId] INT NOT NULL, 
     [IsKeeper] BIT NOT NULL DEFAULT 0, 
     [RoundNumber] INT NULL, 
+    [PickNumber] INT NULL, 
     CONSTRAINT [FK_DraftPicks_ToLeagueYear] FOREIGN KEY (LeagueYearId) REFERENCES [LeagueYear]([Id]), 
     CONSTRAINT [FK_DraftPicks_ToFantasyTeam] FOREIGN KEY (FantasyTeamId) REFERENCES [FantasyTeam]([Id]), 
     CONSTRAINT [FK_DraftPicks_ToPlayer] FOREIGN KEY (PlayerId) REFERENCES [Player]([Id])
 )
+
+GO
+
+CREATE UNIQUE INDEX [UIX_DraftPicks_LeagueYearFantasyTeamPlayer] ON [dbo].[DraftPicks] ([LeagueYearId], [FantasyTeamId], [PlayerId])

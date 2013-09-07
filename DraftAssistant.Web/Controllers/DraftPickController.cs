@@ -17,6 +17,7 @@ namespace DraftAssistant.Web.Controllers
 		private readonly ILeagueYearDraftOrderRepository LeagueYearDraftOrderRepo;
 		private readonly ITradeRepository TradeRepo;
 		private readonly IMapper<List<Models.DraftPickModel>, IList<DataAccess.DraftPick>> DraftPickkMapper;
+		private readonly int numberOfRounds;
 
 		public DraftPickController()
 		{
@@ -26,6 +27,7 @@ namespace DraftAssistant.Web.Controllers
 			LeagueYearDraftOrderRepo = new LeagueYearDraftOrderRepository(context);
 			TradeRepo = new TradeRepository(context);
 			DraftPickkMapper = new AutoMapperHelper<List<Models.DraftPickModel>, IList<DataAccess.DraftPick>>();
+			numberOfRounds = 16;
 		}
 
         //
@@ -46,7 +48,7 @@ namespace DraftAssistant.Web.Controllers
 			var trades = TradeRepo.GetByLeagueYear(leagueYear);
 			var draftOrder = LeagueYearDraftOrderRepo.GetByLeagueYear(leagueYear);
 
-			var result = BuildDraftOrderList(draftOrder, 14);
+			var result = BuildDraftOrderList(draftOrder, numberOfRounds);
 			ApplyTrades(result, trades);
 
 			return Json(result, JsonRequestBehavior.AllowGet);
@@ -54,7 +56,21 @@ namespace DraftAssistant.Web.Controllers
 
 		private void ApplyTrades(List<DraftOrderModel> result, IList<Trade> trades)
 		{
+			var tradedPicks = new int[trades.Count];
+			var index = 0;
 			//TODO implement
+			foreach (var trade in trades)
+			{
+				var draftPick = result.Where(x => x.FantasyTeamId == trade.TraderFantasyTeamId && x.RoundNumber == trade.DraftRound && !tradedPicks.Contains(x.PickNumber)).FirstOrDefault();
+
+				if (draftPick != null)
+				{
+					draftPick.FantasyTeamId = trade.TradeeFantasyTeamId.Value;
+					draftPick.FantasyTeamName = trade.TradeeFantasyTeam.Name;
+
+					tradedPicks[index] = draftPick.PickNumber;
+				}
+			}
 		}
 
 		private List<DraftOrderModel> BuildDraftOrderList(IList<LeagueYearDraftOrder> order, int rounds)

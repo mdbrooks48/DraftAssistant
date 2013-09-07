@@ -41,17 +41,83 @@
 			{ id: 6, description: "DST" }
 		];
 
-		var viewModel = {
-			All: ko.observableArray([]),
-			QB: ko.observableArray([]),
-			RB: ko.observableArray([]),
-			WR: ko.observableArray([]),
-			K: ko.observableArray([]),
-			DST: ko.observableArray([]),
-			ByeWeeks: ko.observableArray([]),
-			DraftPicks: ko.observableArray([]),
-			FantasyTeams: ko.observableArray([]),
-			DraftOrder: ko.observableArray([])
+		function playerViewModel() {
+		    var self = this;
+		    self.All = ko.observableArray([]);
+
+		    self.QB = ko.computed(function () {
+		        return ko.utils.arrayFilter(self.All(), function (player) {
+		            return player.PositionType == 1;
+		        });
+		    }, self);
+		    self.RB = ko.computed(function () {
+		        return ko.utils.arrayFilter(self.All(), function (player) {
+		            return player.PositionType == 2;
+		        });
+		    }, self);
+		    self.WR = ko.computed(function () {
+		        return ko.utils.arrayFilter(self.All(), function (player) {
+		            return player.PositionType == 3;
+		        });
+		    }, self);
+		    self.K = ko.computed(function () {
+		        return ko.utils.arrayFilter(self.All(), function (player) {
+		            return player.PositionType == 5;
+		        });
+		    }, self);
+		    self.DST = ko.computed(function () {
+		        return ko.utils.arrayFilter(self.All(), function (player) {
+		            return player.PositionType == 6;
+		        });
+		    }, self);
+		    self.ByeWeeks = ko.observableArray([]);
+		    self.AllDraftPicks = ko.observableArray([]);
+		    self.DraftPickFilter = ko.observable("All");
+		    self.DraftPicks = ko.computed(function () {
+		        if (self.DraftPickFilter() == "All") {
+		            return self.AllDraftPicks();
+		        }
+                else {
+		            return ko.utils.arrayFilter(self.AllDraftPicks(), function (draftpick) {
+		                return draftpick.FantasyTeamId == self.DraftPickFilter();
+		            });
+		        }
+		    }, self);
+		    self.FantasyTeams = ko.observableArray([]);
+		    self.DraftOrder = ko.observableArray([]);
+		    self.PickNumber = ko.observable(@((int)ViewBag.NextPickNumber));
+		    self.NowDrafting = ko.computed(function () {
+		        var currentPick = self.PickNumber();
+		        var result = ko.utils.arrayFilter(self.DraftOrder(), function (draftpick) {
+		            return draftpick.PickNumber == currentPick;
+		        });
+		        return result;
+		    });
+
+		    self.draftPlayer = function (player, event) {
+		        var draftPick = ko.utils.stringifyJson(self.NowDrafting()[0]);
+		        var data = '{ "model": { "Player":' + JSON.stringify(player) + ', "DraftPick":' + draftPick + '} }';
+		        $.ajax({
+		            url: "/player/Draft/",
+		            data: data,
+		            type: 'post',
+		            contentType: 'application/json',
+		            cache: false,
+		            success: function () {
+		                self.All.remove(player);
+		                PlayerListNamespace.GetDraftPicks(null);
+		                self.nextPick();
+		            },
+		            error: function (jqXHR, textStatus, errorThrown) {
+		                alert(jqXHR.error);
+		            }
+		        });
+		    }
+
+		    self.nextPick = function () {
+		        var currentPick = self.PickNumber();
+		        self.PickNumber(currentPick + 1);
+		    }
 		}
 
 		PlayerListNamespace.LookupPosition = function (positionId) {
@@ -79,22 +145,22 @@
 		PlayerListNamespace.BindByPosition = function (items, position) {
 			switch (position) {
 				case "QB":
-					viewModel.QB(items);
+				    viewModel.QB(items);
 					break;
 				case "RB":
-					viewModel.RB(items);
+				    viewModel.RB(items);
 					break;
 				case "WR":
-					viewModel.WR(items);
+				    viewModel.WR(items);
 					break;
 				case "K":
-					viewModel.K(items);
+				    viewModel.K(items);
 					break;
 				case "DST":
-					viewModel.DST(items);
+				    viewModel.DST(items);
 					break;
 				default:
-					viewModel.All(items);
+				    viewModel.All(items);
 			}
 		}
 
@@ -115,6 +181,7 @@
 				url: "/player/available/" + (!qryString ? "" : qryString),
 				type: 'get',
 				contentType: 'application/json',
+				cache: false,
 				success: function (result) {
 					var positionDescription = (position) ? PlayerListNamespace.LookupPosition(position) : null;
 					PlayerListNamespace.BindByPosition(result, positionDescription);
@@ -130,8 +197,9 @@
 				url: "/ByeWeek/",
 				type: 'get',
 				contentType: 'application/json',
-				success: function (result) {					
-					viewModel.ByeWeeks(result);
+				cache: false,
+				success: function (result) {
+				    viewModel.ByeWeeks(result);
 				},
 				error: function (jqXHR, textStatus, errorThrown) {
 					alert(jqXHR.error);
@@ -150,8 +218,9 @@
 				url: "/DraftPick/" + (!qryString ? "" : qryString),
 				type: 'get',
 				contentType: 'application/json',
+				cache: false,
 				success: function (result) {
-					viewModel.DraftPicks(result);
+				    viewModel.AllDraftPicks(result);
 				},
 				error: function (jqXHR, textStatus, errorThrown) {
 					alert(jqXHR.error);
@@ -164,8 +233,9 @@
 				url: "/FantasyTeam/",
 				type: 'get',
 				contentType: 'application/json',
+				cache: false,
 				success: function (result) {
-					viewModel.FantasyTeams(result);
+				    viewModel.FantasyTeams(result);
 				},
 				error: function (jqXHR, textStatus, errorThrown) {
 					alert(jqXHR.error);
@@ -178,8 +248,10 @@
 				url: "/DraftPick/DraftOrder/",
 				type: 'get',
 				contentType: 'application/json',
+                cache: false,
 				success: function (result) {
-					viewModel.DraftOrder(result);
+				    viewModel.DraftOrder(result);
+				    viewModel.DraftOrder.valueHasMutated();
 				},
 				error: function (jqXHR, textStatus, errorThrown) {
 					alert(jqXHR.error);
@@ -187,13 +259,10 @@
 			});
 		}
 
+		var viewModel = new playerViewModel();
+
 		$(function () {
-			PlayerListNamespace.GetAvailablePlayers(null, 10);
-			PlayerListNamespace.GetAvailablePlayers(1, 10);
-			PlayerListNamespace.GetAvailablePlayers(2, 10);
-			PlayerListNamespace.GetAvailablePlayers(3, 10);
-			PlayerListNamespace.GetAvailablePlayers(5, 10);
-			PlayerListNamespace.GetAvailablePlayers(6, 10);
+			PlayerListNamespace.GetAvailablePlayers(null, null);
 			PlayerListNamespace.GetByeWeeks();
 			PlayerListNamespace.GetDraftPicks(null);
 			PlayerListNamespace.GetFantasyTeams();
@@ -211,13 +280,19 @@
 			});
 
 			$("#draftPickSelect").change(function(event) {
-				var option = $(this).val();
-				var fantasyTeam = (option != 'All') ? option : null;
-				PlayerListNamespace.GetDraftPicks(fantasyTeam);
+			    var option = $(this).val();
+			    viewModel.DraftPickFilter(option);
+				//var fantasyTeam = (option != 'All') ? option : null;
+				//PlayerListNamespace.GetDraftPicks(fantasyTeam);
 			});
 		});
 	</script>
 }
+
+<h3>Now Drafting...</h3>
+<div data-bind="foreach: NowDrafting">
+    Pick Number <span data-bind="text: PickNumber"></span> - <span data-bind="text: FantasyTeamName"></span>
+</div>
 
 <h2>Available Players</h2>
 

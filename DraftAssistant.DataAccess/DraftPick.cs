@@ -20,6 +20,7 @@ namespace DraftAssistant.DataAccess
         public int PlayerId { get; set; }
         public bool IsKeeper { get; set; }
         public Nullable<int> RoundNumber { get; set; }
+        public Nullable<int> PickNumber { get; set; }
     
         public virtual FantasyTeam FantasyTeam { get; set; }
         public virtual LeagueYear LeagueYear { get; set; }

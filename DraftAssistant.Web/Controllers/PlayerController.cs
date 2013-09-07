@@ -8,14 +8,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using DraftAssistant.Web.Filters;
+using DraftAssistant.Web.Models;
 
 namespace DraftAssistant.Web.Controllers
 {
+	[NoCacheFilter()]
     public class PlayerController : Controller
     {
 		public FantasyVBDEntities Context { get; set; }
 		public IPlayerProjectionRepository PlayerRepository { get; set; }
 		public ILeagueYearRepository LeagueYearRepository { get; set; }
+		public IDraftPickRepository DraftPickRepository { get; set; }
 		public IMapper<List<Models.PlayerProjection>, IList<DataAccess.PlayerProjection>> PlayerMapper { get; set; }
 
 		public PlayerController()
@@ -23,12 +27,15 @@ namespace DraftAssistant.Web.Controllers
 			Context = new FantasyVBDEntities();
 			PlayerRepository = new PlayerProjectionRepository(Context);
 			LeagueYearRepository = new LeagueYearRepository(Context);
+			DraftPickRepository = new DraftPickRepository(Context);
 			PlayerMapper = new AutoMapperHelper<List<Models.PlayerProjection>, IList<DataAccess.PlayerProjection>>();
 		}
         //
         // GET: /Player/		
         public ActionResult Index()
         {
+			var leagueYear = LeagueYearRepository.GetById(1);
+			ViewBag.NextPickNumber = DraftPickRepository.GetLastPickNumber(leagueYear) + 1;
             return View();
         }
 
@@ -68,6 +75,35 @@ namespace DraftAssistant.Web.Controllers
 			}
 			// all players at a position
 			return Json(availablePlayers.Where(x => x.PositionType == positionType).ToList(), JsonRequestBehavior.AllowGet);
+		}
+
+
+		[HttpPost]
+		public JsonResult Draft(PlayerPickModel model)
+		{
+			if (ModelState.IsValid)
+			{
+				var leagueYear = LeagueYearRepository.GetById(1);
+				var pick = new DraftPick()
+				{
+					FantasyTeamId = model.DraftPick.FantasyTeamId,
+					IsKeeper = false,
+					LeagueYearId = leagueYear.Id,
+					PickNumber = model.DraftPick.PickNumber,
+					PlayerId = model.Player.PlayerId,
+					RoundNumber = model.DraftPick.RoundNumber
+				};
+				DraftPickRepository.Add(pick);
+				Context.SaveChanges();
+				return Json(new { Success = true });
+			}
+			return Json(new { Success=false } );
+		}
+
+		[HttpPost]
+		public JsonResult UnDraft(Models.PlayerProjection player, DraftOrderModel draftPick)
+		{
+			return Json(null);
 		}
     }
 }

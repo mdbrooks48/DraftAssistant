@@ -9,5 +9,6 @@ namespace DraftAssistant.DataAccess.Repositories
 	public interface IDraftPickRepository : IRepository<DraftPick>
 	{
 		IList<DraftPick> GetDraftPicksByLeagueYear(LeagueYear leagueYear);
+		int GetLastPickNumber(LeagueYear leagueYear);
 	}
 }

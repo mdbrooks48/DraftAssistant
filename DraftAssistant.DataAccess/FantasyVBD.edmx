@@ -100,6 +100,7 @@
           <Property Name="PlayerId" Type="int" Nullable="false" />
           <Property Name="IsKeeper" Type="bit" Nullable="false" />
           <Property Name="RoundNumber" Type="int" />
+          <Property Name="PickNumber" Type="int" />
         </EntityType>
         <EntityType Name="FantasyTeam">
           <Key>
@@ -504,6 +505,7 @@
           <NavigationProperty Name="FantasyTeam" Relationship="FantasyVBDModel.FK_DraftPicks_ToFantasyTeam" FromRole="DraftPicks" ToRole="FantasyTeam" />
           <NavigationProperty Name="LeagueYear" Relationship="FantasyVBDModel.FK_DraftPicks_ToLeagueYear" FromRole="DraftPicks" ToRole="LeagueYear" />
           <NavigationProperty Name="Player" Relationship="FantasyVBDModel.FK_DraftPicks_ToPlayer" FromRole="DraftPicks" ToRole="Player" />
+          <Property Type="Int32" Name="PickNumber" />
         </EntityType>
         <EntityType Name="FantasyTeam">
           <Key>
@@ -583,8 +585,8 @@
           <Property Name="TraderFantasyTeamId" Type="Int32" />
           <Property Name="DraftRound" Type="Int16" />
           <Property Name="TradeeFantasyTeamId" Type="Int32" />
-          <NavigationProperty Name="FantasyTeam" Relationship="FantasyVBDModel.FK_Trades_ToTradeeFantasyTeam" FromRole="Trades" ToRole="FantasyTeam" />
-          <NavigationProperty Name="FantasyTeam1" Relationship="FantasyVBDModel.FK_Trades_ToTraderFantasyTeam" FromRole="Trades" ToRole="FantasyTeam" />
+          <NavigationProperty Name="TradeeFantasyTeam" Relationship="FantasyVBDModel.FK_Trades_ToTradeeFantasyTeam" FromRole="Trades" ToRole="FantasyTeam" />
+          <NavigationProperty Name="TraderFantasyTeam" Relationship="FantasyVBDModel.FK_Trades_ToTraderFantasyTeam" FromRole="Trades" ToRole="FantasyTeam" />
           <NavigationProperty Name="LeagueYear" Relationship="FantasyVBDModel.FK_Trades_ToLeagueYear" FromRole="Trades" ToRole="LeagueYear" />
         </EntityType>
         <Association Name="FK_DraftPicks_ToFantasyTeam">
@@ -851,6 +853,7 @@
           <EntitySetMapping Name="DraftPicks">
             <EntityTypeMapping TypeName="FantasyVBDModel.DraftPick">
               <MappingFragment StoreEntitySet="DraftPicks">
+                <ScalarProperty Name="PickNumber" ColumnName="PickNumber" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="LeagueYearId" ColumnName="LeagueYearId" />
                 <ScalarProperty Name="FantasyTeamId" ColumnName="FantasyTeamId" />

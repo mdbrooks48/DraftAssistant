@@ -16,7 +16,7 @@ namespace DraftAssistant.Web.Mappers
 				.ForMember(dest => dest.FantasyTeamName, opt => opt.MapFrom(src => src.FantasyTeam.Name))
 				.ForMember(dest => dest.IsKeeper, opt => opt.MapFrom(src => src.IsKeeper))
 				.ForMember(dest => dest.LeagueYearId, opt => opt.MapFrom(src => src.LeagueYearId))
-				.ForMember(dest => dest.PickNumber, opt => opt.Ignore())
+				.ForMember(dest => dest.PickNumber, opt => opt.MapFrom(src => src.PickNumber))
 				.ForMember(dest => dest.PlayerId, opt => opt.MapFrom(src => src.PlayerId))
 				.ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.Player.FirstName))
 				.ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.Player.LastName))

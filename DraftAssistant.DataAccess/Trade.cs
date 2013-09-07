@@ -20,8 +20,8 @@ namespace DraftAssistant.DataAccess
         public Nullable<short> DraftRound { get; set; }
         public Nullable<int> TradeeFantasyTeamId { get; set; }
     
-        public virtual FantasyTeam FantasyTeam { get; set; }
-        public virtual FantasyTeam FantasyTeam1 { get; set; }
+        public virtual FantasyTeam TradeeFantasyTeam { get; set; }
+        public virtual FantasyTeam TraderFantasyTeam { get; set; }
         public virtual LeagueYear LeagueYear { get; set; }
     }
 }
