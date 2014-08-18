@@ -82,7 +82,7 @@
     <Build Include="tSQLt\Tables\Private_ExpectException.sql" />
     <Build Include="tSQLt\Tables\Run_LastExecution.sql" />
     <Build Include="tSQLt\Tables\TestMessage.sql" />
-    <Build Include="tSQLt\Tables\TestResult.sql" />
+    <Build Include="tSQLt\Tables\aTestResult.sql" />
     <Build Include="tSQLt\Views\Tests.sql" />
     <Build Include="tSQLt\Views\TestClasses.sql" />
     <Build Include="tSQLt\Functions\Private_SqlVariantFormatter.sql" />
