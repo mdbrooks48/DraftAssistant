@@ -96,6 +96,7 @@
     <None Include="Scripts\Trades.sql" />
     <None Include="Scripts\TeamByeWeek.sql" />
     <None Include="Scripts\LeagueYearDraftOrder.sql" />
+    <None Include="localdb.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment1.sql" />

@@ -73,6 +73,9 @@
     <Build Include="dbo\Stored Procedures\GetFantasyProQBs.sql" />
     <Build Include="dbo\Tables\FantasyPros_TeamCodeMap.sql" />
     <Build Include="dbo\Functions\fnSplitString.sql" />
+    <Build Include="dbo\Stored Procedures\GetFantasyProRBs.sql" />
+    <Build Include="dbo\Stored Procedures\GetFantasyProWRs.sql" />
+    <Build Include="dbo\Stored Procedures\GetFantasyProTEs.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="localdb.publish.xml" />

@@ -1,6 +1,7 @@
 ﻿MERGE dbo.LeagueYear AS target
     USING (values
-	(1, 1,'2013')
+	(1, 1,'2013'),
+	(2, 1, '2014')
 	) 
 	AS source (Id, LeagueId, Season)
     ON (target.Id = source.Id)

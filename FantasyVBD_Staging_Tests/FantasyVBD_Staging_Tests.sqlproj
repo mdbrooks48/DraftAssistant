@@ -195,6 +195,9 @@
     <Build Include="Tests\Stored Procedures\test GetFantasyProQBs Should Get Not Loaded Rows.sql" />
     <Build Include="Security\Tests.sql" />
     <Build Include="Tests\Stored Procedures\test fnSplitString returns two rows space delimited.sql" />
+    <Build Include="Tests\Stored Procedures\test GetFantasyProRBs Should Get Not Loaded Rows.sql" />
+    <Build Include="Tests\Stored Procedures\test GetFantasyProWRs Should Get Not Loaded Rows.sql" />
+    <Build Include="Tests\Stored Procedures\test GetFantasyProTEs Should Get Not Loaded Rows.sql" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="tSQLtCLR">

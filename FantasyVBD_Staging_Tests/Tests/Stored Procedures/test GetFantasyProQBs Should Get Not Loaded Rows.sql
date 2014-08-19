@@ -31,7 +31,7 @@ AS
 										 
 	--Act
 	INSERT INTO #GetFantasyProQBsResult
-	EXEC tSQLt.ResultSetFilter 1, 'EXEC dbo.GetFantasyProQBs';
+	EXEC dbo.GetFantasyProQBs;
     
 	SELECT @actual = Count(1) from #GetFantasyProQBsResult;
 
