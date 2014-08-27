@@ -78,8 +78,8 @@
     <Build Include="dbo\Stored Procedures\GetFantasyProTEs.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="localdb.publish.xml" />
     <None Include="Scripts\FantasyPros_TeamCodeMap.sql" />
+    <None Include="localdb.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
