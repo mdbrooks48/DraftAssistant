@@ -72,8 +72,8 @@
     <Folder Include="Tests\Stored Procedures" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="localdb.publish.xml" />
     <None Include="Assemblies\tSQLtCLR.dll" />
+    <None Include="localdb.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="tSQLt\Tables\Private_NullCellTable.sql" />
@@ -198,6 +198,7 @@
     <Build Include="Tests\Stored Procedures\test GetFantasyProRBs Should Get Not Loaded Rows.sql" />
     <Build Include="Tests\Stored Procedures\test GetFantasyProWRs Should Get Not Loaded Rows.sql" />
     <Build Include="Tests\Stored Procedures\test GetFantasyProTEs Should Get Not Loaded Rows.sql" />
+    <Build Include="Tests\Stored Procedures\test GetFantasyProKs Should Get Not Loaded Rows.sql" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="tSQLtCLR">

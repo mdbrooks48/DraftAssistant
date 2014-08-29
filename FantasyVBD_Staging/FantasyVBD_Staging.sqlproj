@@ -76,6 +76,7 @@
     <Build Include="dbo\Stored Procedures\GetFantasyProRBs.sql" />
     <Build Include="dbo\Stored Procedures\GetFantasyProWRs.sql" />
     <Build Include="dbo\Stored Procedures\GetFantasyProTEs.sql" />
+    <Build Include="dbo\Stored Procedures\GetFantasyProKs.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Scripts\FantasyPros_TeamCodeMap.sql" />

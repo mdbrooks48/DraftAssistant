@@ -12,11 +12,20 @@
   DTS:ObjectName="FantasyPros_to_FantasyVBD"
   DTS:PackageType="5"
   DTS:ProtectionLevel="0"
-  DTS:VersionBuild="27"
-  DTS:VersionGUID="{7C44F0F5-4FDD-410D-8855-DF59DEE5F4F9}">
+  DTS:VersionBuild="44"
+  DTS:VersionGUID="{2DD58456-6E3F-4E53-9FC3-8060B7A7D651}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">6</DTS:Property>
   <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{A902C9C4-8B1F-43DA-AD58-BF48591BA3D2}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="KPositionCode">
+      <DTS:VariableValue
+        DTS:DataType="8">K</DTS:VariableValue>
+    </DTS:Variable>
     <DTS:Variable
       DTS:CreationName=""
       DTS:DTSID="{6D6386BA-C03F-4E90-905E-27F3EA42494E}"
@@ -351,12 +360,19 @@ public class ScriptMain : UserComponent
     {
         var points = 0M;
 
-        points += Row.PassTDs_IsNull ? 0 : Row.PassTDs * 6;
-        points += Row.ReceiveTDs_IsNull ? 0 : Row.ReceiveTDs * 6;
-        points += Row.RushTDs_IsNull ? 0 : Row.RushTDs * 6;
-        points += Row.PassYards_IsNull ? 0 : Row.PassYards / 25;
-        points += Row.RushYards_IsNull ? 0 : Row.RushYards / 10;
-        points += Row.ReceiveYards_IsNull ? 0 : Row.ReceiveYards / 10;
+        if (Row.PositionCode.Trim() == "K" || Row.PositionCode.Trim() == "DST")
+        {
+            points = Row.FantasyPoints;
+        }
+        else 
+        {
+            points += Row.PassTDs_IsNull ? 0 : Row.PassTDs * 6;
+            points += Row.ReceiveTDs_IsNull ? 0 : Row.ReceiveTDs * 6;
+            points += Row.RushTDs_IsNull ? 0 : Row.RushTDs * 6;
+            points += Row.PassYards_IsNull ? 0 : Row.PassYards / 25;
+            points += Row.RushYards_IsNull ? 0 : Row.RushYards / 10;
+            points += Row.ReceiveYards_IsNull ? 0 : Row.ReceiveYards / 10;
+        }
 
         Row.CalculatedPoints = points;
     }
@@ -478,11 +494,41 @@ public class Input0Buffer: ScriptBuffer
         }
     }
 
+    public String PositionCode
+    {
+        get
+        {
+            return Buffer.GetString(BufferColumnIndexes[6]);
+        }
+    }
+    public bool PositionCode_IsNull
+    {
+        get
+        {
+            return IsNull(6);
+        }
+    }
+
+    public Decimal FantasyPoints
+    {
+        get
+        {
+            return Buffer.GetDecimal(BufferColumnIndexes[7]);
+        }
+    }
+    public bool FantasyPoints_IsNull
+    {
+        get
+        {
+            return IsNull(7);
+        }
+    }
+
     public Decimal CalculatedPoints
     {
         set
         {
-            this[6] = value;
+            this[8] = value;
         }
     }
     public bool CalculatedPoints_IsNull
@@ -491,7 +537,7 @@ public class Input0Buffer: ScriptBuffer
         {
             if (value)
             {
-                SetNull(6);
+                SetNull(8);
             }
             else
             {
@@ -625,20 +671,20 @@ public class Variables
                       dataType="System.String"><![CDATA[<?xml version="1.0" encoding="UTF-16" standalone="yes"?>
 <c:Project xmlns:c="http://schemas.microsoft.com/codeprojectml/2010/08/main" xmlns:msb="http://schemas.microsoft.com/developer/msbuild/2003" runtimeVersion="3.0" schemaVersion="1.0">
 	<msb:PropertyGroup>
-		<msb:CodeName>SC_63cf33c6109a4ff7a43c9257e9465f01</msb:CodeName>
 		<msb:Language>msBuild</msb:Language>
+		<msb:CodeName>SC_63cf33c6109a4ff7a43c9257e9465f01</msb:CodeName>
 		<msb:DisplayName>SC_63cf33c6109a4ff7a43c9257e9465f01</msb:DisplayName>
 		<msb:ProjectId>{0DF6668D-6E46-4284-9568-D26810F2D173}</msb:ProjectId>
 	</msb:PropertyGroup>
 	<msb:ItemGroup>
 		<msb:Project Include="SC_63cf33c6109a4ff7a43c9257e9465f01.csproj"/>
-		<msb:File Include="Properties\AssemblyInfo.cs"/>
 		<msb:File Include="Properties\Settings.settings"/>
+		<msb:File Include="Properties\AssemblyInfo.cs"/>
 		<msb:File Include="Properties\Resources.resx"/>
 		<msb:File Include="Properties\Resources.Designer.cs"/>
-		<msb:File Include="Properties\Settings.Designer.cs"/>
-		<msb:File Include="main.cs"/>
 		<msb:File Include="BufferWrapper.cs"/>
+		<msb:File Include="main.cs"/>
+		<msb:File Include="Properties\Settings.Designer.cs"/>
 		<msb:File Include="ComponentWrapper.cs"/>
 	</msb:ItemGroup>
 </c:Project>]]></arrayElement>
@@ -854,139 +900,123 @@ namespace SC_63cf33c6109a4ff7a43c9257e9465f01.Properties {
                     <arrayElement
                       dataType="System.String"><![CDATA[TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAgAAAAA4fug4AtAnNIbgBTM0hVGhpcyBwcm9ncmFtIGNhbm5vdCBiZSBydW4gaW4gRE9TIG1v
-ZGUuDQ0KJAAAAAAAAABQRQAATAEDABpo/VMAAAAAAAAAAOAAAiELAQsAABgAAAAGAAAAAAAArjYA
+ZGUuDQ0KJAAAAAAAAABQRQAATAEDAA78/1MAAAAAAAAAAOAAAiELAQsAABoAAAAIAAAAAAAAXjgA
 AAAgAAAAQAAAAAAAEAAgAAAAAgAABAAAAAAAAAAEAAAAAAAAAACAAAAAAgAAAAAAAAMAQIUAABAA
-ABAAAAAAEAAAEAAAAAAAABAAAAAAAAAAAAAAAFQ2AABXAAAAAEAAAAAEAAAAAAAAAAAAAAAAAAAA
+ABAAAAAAEAAAEAAAAAAAABAAAAAAAAAAAAAAAAw4AABPAAAAAEAAAAgEAAAAAAAAAAAAAAAAAAAA
 AAAAAGAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAIAAACAAAAAAAAAAAAAAACCAAAEgAAAAAAAAAAAAAAC50ZXh0AAAAtBYAAAAgAAAAGAAAAAIA
-AAAAAAAAAAAAAAAAACAAAGAucnNyYwAAAAAEAAAAQAAAAAQAAAAaAAAAAAAAAAAAAAAAAABAAABA
-LnJlbG9jAAAMAAAAAGAAAAACAAAAHgAAAAAAAAAAAAAAAAAAQAAAQgAAAAAAAAAAAAAAAAAAAACQ
-NgAAAAAAAEgAAAACAAUAECQAAEQSAAABAAAAAAAAAFgjAAC4AAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAH4CKA0AAAoCAnMaAAAGfQEAAAQCAnMbAAAGfQIAAAQqkgRy
-AQAAcBpvDgAACiwVAgUCAygPAAAKDgRzCQAABm8DAAAGKkorBwIDbwQAAAYDbxgAAAYt8SoGKh4C
-KBEAAAoqHgIoEgAACioAABMwAwACAQAAAQAAERZzEwAACgoGA28NAAAGLRMDbwwAAAYccxMAAAoo
-FAAACisGFnMTAAAKKBUAAAoKBgNvFQAABi0TA28UAAAGHHMTAAAKKBQAAAorBhZzEwAACigVAAAK
-CgYDbxEAAAYtEwNvEAAABhxzEwAACigUAAAKKwYWcxMAAAooFQAACgoGA28LAAAGLRQDbwoAAAYf
-GXMTAAAKKBYAAAorBhZzEwAACigVAAAKCgYDbw8AAAYtFANvDgAABh8KcxMAAAooFgAACisGFnMT
-AAAKKBUAAAoKBgNvEwAABi0UA28SAAAGHwpzEwAACigWAAAKKwYWcxMAAAooFQAACgoDBm8WAAAG
-Kh4CKAEAAAYqKgIDBAUoFwAACipSAnsYAAAKAnsZAAAKFpRvGgAACioiAhYoGwAACipSAnsYAAAK
-AnsZAAAKF5RvGgAACioiAhcoGwAACipSAnsYAAAKAnsZAAAKGJRvGgAACioiAhgoGwAACipSAnsY
-AAAKAnsZAAAKGZRvGgAACioiAhkoGwAACipSAnsYAAAKAnsZAAAKGpRvGgAACioiAhooGwAACipS
-AnsYAAAKAnsZAAAKG5RvGgAACioiAhsoGwAACio6AhwDjAcAAAEoHAAACipaAywIAhwoHQAACipy
-EQAAcHMeAAAKeh4CKB8AAAoqHgIoIAAACio6AighAAAKAgN9AwAABCo6AighAAAKAgN9BAAABCoe
-AighAAAKKgAAABMwAgAtAAAAAgAAEX4FAAAELSByrgAAcNAHAAACKCMAAApvJAAACnMlAAAKCgaA
-BQAABH4FAAAEKhp+BgAABCoeAoAGAAAEKhp+BwAABCoucyEAAAaABwAABCoeAigoAAAKKgAAAAAA
-tAAAAM7K774BAAAAkQAAAGxTeXN0ZW0uUmVzb3VyY2VzLlJlc291cmNlUmVhZGVyLCBtc2Nvcmxp
-YiwgVmVyc2lvbj00LjAuMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1
-YzU2MTkzNGUwODkjU3lzdGVtLlJlc291cmNlcy5SdW50aW1lUmVzb3VyY2VTZXQCAAAAAAAAAAAA
-AABQQURQQURQtAAAAEJTSkIBAAEAAAAAAAwAAAB2NC4wLjMwMzE5AAAAAAUAbAAAAJAGAAAjfgAA
-/AYAAGQIAAAjU3RyaW5ncwAAAABgDwAAIAEAACNVUwCAEAAAEAAAACNHVUlEAAAAkBAAALQBAAAj
-QmxvYgAAAAAAAAACAAABVxWiAQkBAAAA+iUzABYAAAEAAAAgAAAACAAAAAcAAAAiAAAADwAAACgA
-AAAPAAAAAgAAAAMAAAARAAAAEgAAAAEAAAAEAAAAAQAAAAAACgABAAAAAAAGAO4AzQAGAP4AzQAK
-ABsBFAEOADcBIgESAHYBzQAGAIUBzQAKAOIBFAEKAO0D3AMKAB4ECQQKAPcE3QQKACIFEAUKADkF
-EAUKAFYFEAUKAHUFEAUKAI4FEAUKAKcFEAUKAMIFEAUKAN0FEAUKAPYFEAUKAC8GDwYKAE8GDwYK
-AJEGFAEKAJgGFAEGAMEGzQAKAC8HFAEKAFwHSQcKAHkHFAEKAH4HFAEKAKIHEAUOAM4HuAcOAOcH
-uAcKAPwHDwYAAAAAAQAAAAAAAQABAAEAEAAyAAAABQABAAEAAQAQAEAAAAAIAAMABQABABAASwAA
-AAkAAwAJAAEAEABYAAAADQADABoAAQAQAGQAAAANAAQAGwAAABAAbgB4AA0ABQAcAAABEACnAHgA
-EQAHACAABgBYABMABgBkABcAAQDMA1YAAQDMA1YAEQD9A2AAEQAqBGQAEQBuBIIAUCAAAAAAhhhP
-ARsAAQBwIAAAAADGAJMBHwABAJUgAAAAAMYBoAEpAAUAqCAAAAAAxgG0ASkABgCqIAAAAADGAMsB
-GwAHALIgAAAAAMYA1gEbAAcAvCAAAAAAxgC0ASkABwDKIQAAAACGGE8BGwAIANIhAAAAAIYYTwEv
-AAgA3SEAAAAAhgjqATkACwDyIQAAAACGCPgBPgALAPshAAAAAIYIDQI5AAsAECIAAAAAhggZAj4A
-CwAZIgAAAACGCCwCOQALAC4iAAAAAIYIOgI+AAsANyIAAAAAhghPAjkACwBMIgAAAACGCFsCPgAL
-AFUiAAAAAIYIbgI5AAsAaiIAAAAAhgh/Aj4ACwBzIgAAAACGCJcCOQALAIgiAAAAAIYIpgI+AAsA
-kSIAAAAAhgi8AkIACwCgIgAAAACGCNECSAAMALciAAAAAIYA7QI+AA0AvyIAAAAAhgD1Aj4ADQDH
-IgAAAACGGE8BWgANANYiAAAAAIYYTwFaAA4A5SIAAAAAgxhPARsADwDwIgAAAACTCDoEaAAPACkj
-AAAAAJMITgRtAA8AMCMAAAAAkwhaBHIADwA4IwAAAACWCH4EhgAQAEsjAAAAAIYYTwEbABAAPyMA
-AAAAkRgXCPoAEAAAAAEAkgQAAAIAmgQAAAMApAQAAAQAqwQAAAEApAQAAAEAtQQAAAEAtQQAAAEA
-pAQAAAIAuQQAAAMAqwQAAAEAzQQAAAEAzQQAAAEA0wQAAAEA0wQAAAEAzQRRAE8BkABZAE8BkABh
-AE8BkABpAE8BkABxAE8BkAB5AE8BkACBAE8BkACJAE8BkACRAE8BkACZAE8BkAChAE8BlQCpAE8B
-GwAJAE8BGwCxAKkGmgAJALAGoQDBAE8BGwAJAMsBGwAJANYBGwA5AE8BlQA5AOgGrAA5APQGrAA5
-AAAHrAARAE8BLwARAKQEugARALkEvgApAAwHwgARABcHyAARAB4HzQARACcHlQDJAE8BkAARAO0C
-PgARAPUCPgAZAE8BGwDRAE8BGwDZAJAH0wDZAKsH2gBBAE8B3wDxAE8B6wABAU8BGwAhAE8BGwAu
-ABsAbwEuAGMAlQEuAAsA/gAuABMARgEuACMAbwEuACsAbwEuADMARgEuADsAdQEuAEMAbwEuAFsA
-jAFjAIMApwDhADsBpwDjABMBpwDpATMB8QAJAjMB8QC1AOYABAABAAcADwAIABEAAAABA00AAAAL
-A1IAAAAcA00AAAAkA1IAAAAzA00AAAA9A1IAAABOA00AAABWA1IAAABlA00AAAByA1IAAACGA00A
-AACRA1IAAACjA00AAAC0A1IAAADtA3gAAABmBH0AAACKBIsAAgAKAAMAAgALAAUAAgAMAAcAAgAN
-AAkAAgAOAAsAAgAPAA0AAgAQAA8AAgARABEAAgASABMAAgATABUAAgAUABcAAgAVABkAAQAWABsA
-AQAXAB0AAgAdAB8AAgAeACEAAQAfACEAAgAgACMABIAAAAEAAADoFCUBAAAAAAAAbQYAAAsAAAAA
-AAAAAAAAAAEAsAAAAAAABAAAAAAAAAAAAAAACgALAQAAAAAEAAAAAAAAAAAAAAAKABQBAAAAAAsA
-AAAAAAAAAAAAAAEAVQEAAAAAAAAAAAEAAAAeCAAAAAAAAAA8TW9kdWxlPgBTQ182M2NmMzNjNjEw
-OWE0ZmY3YTQzYzkyNTdlOTQ2NWYwMS5kbGwAVXNlckNvbXBvbmVudABTY3JpcHRNYWluAElucHV0
-MEJ1ZmZlcgBDb25uZWN0aW9ucwBWYXJpYWJsZXMAUmVzb3VyY2VzAFNDXzYzY2YzM2M2MTA5YTRm
-ZjdhNDNjOTI1N2U5NDY1ZjAxLlByb3BlcnRpZXMAU2V0dGluZ3MATWljcm9zb2Z0LlNxbFNlcnZl
-ci5UeFNjcmlwdABNaWNyb3NvZnQuU3FsU2VydmVyLkR0cy5QaXBlbGluZQBTY3JpcHRDb21wb25l
-bnQAU2NyaXB0QnVmZmVyAG1zY29ybGliAFN5c3RlbQBPYmplY3QAU3lzdGVtLkNvbmZpZ3VyYXRp
-b24AQXBwbGljYXRpb25TZXR0aW5nc0Jhc2UALmN0b3IATWljcm9zb2Z0LlNxbFNlcnZlci5QaXBl
-bGluZUhvc3QAUGlwZWxpbmVCdWZmZXIAT3V0cHV0TmFtZU1hcABQcm9jZXNzSW5wdXQASW5wdXQw
-X1Byb2Nlc3NJbnB1dABJbnB1dDBfUHJvY2Vzc0lucHV0Um93AFByZUV4ZWN1dGUAUG9zdEV4ZWN1
-dGUARGVjaW1hbABnZXRfUGFzc1lhcmRzAGdldF9QYXNzWWFyZHNfSXNOdWxsAGdldF9QYXNzVERz
-AGdldF9QYXNzVERzX0lzTnVsbABnZXRfUnVzaFlhcmRzAGdldF9SdXNoWWFyZHNfSXNOdWxsAGdl
-dF9SdXNoVERzAGdldF9SdXNoVERzX0lzTnVsbABnZXRfUmVjZWl2ZVlhcmRzAGdldF9SZWNlaXZl
-WWFyZHNfSXNOdWxsAGdldF9SZWNlaXZlVERzAGdldF9SZWNlaXZlVERzX0lzTnVsbABzZXRfQ2Fs
-Y3VsYXRlZFBvaW50cwBzZXRfQ2FsY3VsYXRlZFBvaW50c19Jc051bGwATmV4dFJvdwBFbmRPZlJv
-d3NldABQYXNzWWFyZHMAUGFzc1lhcmRzX0lzTnVsbABQYXNzVERzAFBhc3NURHNfSXNOdWxsAFJ1
-c2hZYXJkcwBSdXNoWWFyZHNfSXNOdWxsAFJ1c2hURHMAUnVzaFREc19Jc051bGwAUmVjZWl2ZVlh
-cmRzAFJlY2VpdmVZYXJkc19Jc051bGwAUmVjZWl2ZVREcwBSZWNlaXZlVERzX0lzTnVsbABDYWxj
-dWxhdGVkUG9pbnRzAENhbGN1bGF0ZWRQb2ludHNfSXNOdWxsAFBhcmVudENvbXBvbmVudABTeXN0
-ZW0uUmVzb3VyY2VzAFJlc291cmNlTWFuYWdlcgByZXNvdXJjZU1hbgBTeXN0ZW0uR2xvYmFsaXph
-dGlvbgBDdWx0dXJlSW5mbwByZXNvdXJjZUN1bHR1cmUAZ2V0X1Jlc291cmNlTWFuYWdlcgBnZXRf
-Q3VsdHVyZQBzZXRfQ3VsdHVyZQBDdWx0dXJlAGRlZmF1bHRJbnN0YW5jZQBnZXRfRGVmYXVsdABE
-ZWZhdWx0AElucHV0SUQASW5wdXROYW1lAEJ1ZmZlcgBPdXRwdXRNYXAAUm93AEJ1ZmZlckNvbHVt
-bkluZGV4ZXMAdmFsdWUAQ29tcG9uZW50AFN5c3RlbS5SdW50aW1lLlZlcnNpb25pbmcAVGFyZ2V0
-RnJhbWV3b3JrQXR0cmlidXRlAFN5c3RlbS5SZWZsZWN0aW9uAEFzc2VtYmx5VGl0bGVBdHRyaWJ1
-dGUAQXNzZW1ibHlEZXNjcmlwdGlvbkF0dHJpYnV0ZQBBc3NlbWJseUNvbmZpZ3VyYXRpb25BdHRy
-aWJ1dGUAQXNzZW1ibHlDb21wYW55QXR0cmlidXRlAEFzc2VtYmx5UHJvZHVjdEF0dHJpYnV0ZQBB
-c3NlbWJseUNvcHlyaWdodEF0dHJpYnV0ZQBBc3NlbWJseVRyYWRlbWFya0F0dHJpYnV0ZQBBc3Nl
-bWJseUN1bHR1cmVBdHRyaWJ1dGUAQXNzZW1ibHlWZXJzaW9uQXR0cmlidXRlAFN5c3RlbS5SdW50
-aW1lLkNvbXBpbGVyU2VydmljZXMAQ29tcGlsYXRpb25SZWxheGF0aW9uc0F0dHJpYnV0ZQBSdW50
-aW1lQ29tcGF0aWJpbGl0eUF0dHJpYnV0ZQBTQ182M2NmMzNjNjEwOWE0ZmY3YTQzYzkyNTdlOTQ2
-NWYwMQBTdHJpbmcAU3RyaW5nQ29tcGFyaXNvbgBFcXVhbHMAR2V0Q29sdW1uSW5kZXhlcwBTU0lT
-U2NyaXB0Q29tcG9uZW50RW50cnlQb2ludEF0dHJpYnV0ZQBvcF9NdWx0aXBseQBvcF9BZGRpdGlv
-bgBvcF9EaXZpc2lvbgBHZXREZWNpbWFsAElzTnVsbABzZXRfSXRlbQBTZXROdWxsAEludmFsaWRP
-cGVyYXRpb25FeGNlcHRpb24AU3lzdGVtLkRpYWdub3N0aWNzAERlYnVnZ2VyTm9uVXNlckNvZGVB
-dHRyaWJ1dGUAVHlwZQBSdW50aW1lVHlwZUhhbmRsZQBHZXRUeXBlRnJvbUhhbmRsZQBBc3NlbWJs
-eQBnZXRfQXNzZW1ibHkAU3lzdGVtLkNvbXBvbmVudE1vZGVsAEVkaXRvckJyb3dzYWJsZUF0dHJp
-YnV0ZQBFZGl0b3JCcm93c2FibGVTdGF0ZQBDb21waWxlckdlbmVyYXRlZEF0dHJpYnV0ZQAuY2N0
-b3IAU0NfNjNjZjMzYzYxMDlhNGZmN2E0M2M5MjU3ZTk0NjVmMDEuUHJvcGVydGllcy5SZXNvdXJj
-ZXMucmVzb3VyY2VzAAAAAAAPSQBuAHAAdQB0ACAAMAAAgJtJAHMATgB1AGwAbAAgAHAAcgBvAHAA
-ZQByAHQAeQAgAGMAYQBuAG4AbwB0ACAAYgBlACAAcwBlAHQAIAB0AG8AIABGAGEAbABzAGUALgAg
-AEEAcwBzAGkAZwBuACAAYQAgAHYAYQBsAHUAZQAgAHQAbwAgAHQAaABlACAAYwBvAGwAdQBtAG4A
-IABpAG4AcwB0AGUAYQBkAC4AAHFTAEMAXwA2ADMAYwBmADMAMwBjADYAMQAwADkAYQA0AGYAZgA3
-AGEANAAzAGMAOQAyADUANwBlADkANAA2ADUAZgAwADEALgBQAHIAbwBwAGUAcgB0AGkAZQBzAC4A
-UgBlAHMAbwB1AHIAYwBlAHMAAAAZAW/oUtNIj6q5r9/RW5YACImEXc2AgMyRCLd6XFYZNOCJAwYS
-FAMGEhgDIAABCSAEAQgOEhUSGQUgAQESEAkgAwESFR0IEhkEIAARHQMgAAIFIAEBER0EIAEBAgQo
-ABEdAygAAgMGEgUFIAEBEgUDBhIhAwYSJQQAABIhBAAAEiUFAAEBEiUECAASIQQIABIlAwYSIAQA
-ABIgBAgAEiAEIAEBDgQgAQEIBiACAg4RXQUgAR0ICAQBAAAACAACER0RHREdBAcBER0DBhIVAwYd
-CAUgAREdCAQgAQIIBSACAQgcBgABEm0RcQQgABJ1BiACAQ4SdQQHARIhBSABARF9CAEAAgAAAAAA
-AwAAAUcBABouTkVURnJhbWV3b3JrLFZlcnNpb249djQuMAEAVA4URnJhbWV3b3JrRGlzcGxheU5h
-bWUQLk5FVCBGcmFtZXdvcmsgNCgBACNTQ182M2NmMzNjNjEwOWE0ZmY3YTQzYzkyNTdlOTQ2NWYw
-MQAABQEAAAAAFgEAEUNvcHlyaWdodCBAICAyMDE0AAAIAQAIAAAAAAAeAQABAFQCFldyYXBOb25F
-eGNlcHRpb25UaHJvd3MBfDYAAAAAAAAAAAAAnjYAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJA2
-AAAAAAAAAAAAAAAAAAAAAAAAAABfQ29yRGxsTWFpbgBtc2NvcmVlLmRsbAAAAAAA/yUAIAAQAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAEAEAAAABgAAIAAAAAAAAAAAAAAAAAAAAEAAQAAADAAAIAAAAAAAAAAAAAAAAAAAAEAAAAAAEgA
-AABYQAAApAMAAAAAAAAAAAAApAM0AAAAVgBTAF8AVgBFAFIAUwBJAE8ATgBfAEkATgBGAE8AAAAA
-AL0E7/4AAAEAAAABACUB6BQAAAEAJQHoFD8AAAAAAAAABAAAAAIAAAAAAAAAAAAAAAAAAABEAAAA
-AQBWAGEAcgBGAGkAbABlAEkAbgBmAG8AAAAAACQABAAAAFQAcgBhAG4AcwBsAGEAdABpAG8AbgAA
-AAAAAACwBAQDAAABAFMAdAByAGkAbgBnAEYAaQBsAGUASQBuAGYAbwAAAOACAAABADAAMAAwADAA
-MAA0AGIAMAAAAHAAJAABAEYAaQBsAGUARABlAHMAYwByAGkAcAB0AGkAbwBuAAAAAABTAEMAXwA2
-ADMAYwBmADMAMwBjADYAMQAwADkAYQA0AGYAZgA3AGEANAAzAGMAOQAyADUANwBlADkANAA2ADUA
-ZgAwADEAAAA8AA0AAQBGAGkAbABlAFYAZQByAHMAaQBvAG4AAAAAADEALgAwAC4ANQAzADUAMgAu
-ADIAOQAzAAAAAABwACgAAQBJAG4AdABlAHIAbgBhAGwATgBhAG0AZQAAAFMAQwBfADYAMwBjAGYA
-MwAzAGMANgAxADAAOQBhADQAZgBmADcAYQA0ADMAYwA5ADIANQA3AGUAOQA0ADYANQBmADAAMQAu
-AGQAbABsAAAASAASAAEATABlAGcAYQBsAEMAbwBwAHkAcgBpAGcAaAB0AAAAQwBvAHAAeQByAGkA
-ZwBoAHQAIABAACAAIAAyADAAMQA0AAAAeAAoAAEATwByAGkAZwBpAG4AYQBsAEYAaQBsAGUAbgBh
-AG0AZQAAAFMAQwBfADYAMwBjAGYAMwAzAGMANgAxADAAOQBhADQAZgBmADcAYQA0ADMAYwA5ADIA
-NQA3AGUAOQA0ADYANQBmADAAMQAuAGQAbABsAAAAaAAkAAEAUAByAG8AZAB1AGMAdABOAGEAbQBl
-AAAAAABTAEMAXwA2ADMAYwBmADMAMwBjADYAMQAwADkAYQA0AGYAZgA3AGEANAAzAGMAOQAyADUA
-NwBlADkANAA2ADUAZgAwADEAAABAAA0AAQBQAHIAbwBkAHUAYwB0AFYAZQByAHMAaQBvAG4AAAAx
-AC4AMAAuADUAMwA1ADIALgAyADkAMwAAAAAARAANAAEAQQBzAHMAZQBtAGIAbAB5ACAAVgBlAHIA
-cwBpAG8AbgAAADEALgAwAC4ANQAzADUAMgAuADIAOQAzAAAAAAAAAAAAADAAAAwAAACwNgAAAAAA
+AAAAIAAACAAAAAAAAAAAAAAACCAAAEgAAAAAAAAAAAAAAC50ZXh0AAAAZBgAAAAgAAAAGgAAAAIA
+AAAAAAAAAAAAAAAAACAAAGAucnNyYwAAAAgEAAAAQAAAAAYAAAAcAAAAAAAAAAAAAAAAAABAAABA
+LnJlbG9jAAAMAAAAAGAAAAACAAAAIgAAAAAAAAAAAAAAAAAAQAAAQgAAAAAAAAAAAAAAAAAAAABA
+OAAAAAAAAEgAAAACAAUAgCQAAIwTAAABAAAAAAAAAMgjAAC4AAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAH4CKA0AAAoCAnMeAAAGfQEAAAQCAnMfAAAGfQIAAAQqkgRy
+AQAAcBpvDgAACiwVAgUCAygPAAAKDgRzCQAABm8DAAAGKkorBwIDbwQAAAYDbxwAAAYt8SoGKh4C
+KBEAAAoqHgIoEgAACioAABMwAwA8AQAAAQAAERZzEwAACgoDbxYAAAZvFAAACnIRAABwKBUAAAot
+FwNvFgAABm8UAAAKchUAAHAoFQAACiwMA28YAAAGCjjzAAAABgNvDQAABi0TA28MAAAGHHMTAAAK
+KBYAAAorBhZzEwAACigXAAAKCgYDbxUAAAYtEwNvFAAABhxzEwAACigWAAAKKwYWcxMAAAooFwAA
+CgoGA28RAAAGLRMDbxAAAAYccxMAAAooFgAACisGFnMTAAAKKBcAAAoKBgNvCwAABi0UA28KAAAG
+HxlzEwAACigYAAAKKwYWcxMAAAooFwAACgoGA28PAAAGLRQDbw4AAAYfCnMTAAAKKBgAAAorBhZz
+EwAACigXAAAKCgYDbxMAAAYtFANvEgAABh8KcxMAAAooGAAACisGFnMTAAAKKBcAAAoKAwZvGgAA
+BioeAigBAAAGKioCAwQFKBkAAAoqUgJ7GgAACgJ7GwAAChaUbxwAAAoqIgIWKB0AAAoqUgJ7GgAA
+CgJ7GwAACheUbxwAAAoqIgIXKB0AAAoqUgJ7GgAACgJ7GwAAChiUbxwAAAoqIgIYKB0AAAoqUgJ7
+GgAACgJ7GwAAChmUbxwAAAoqIgIZKB0AAAoqUgJ7GgAACgJ7GwAAChqUbxwAAAoqIgIaKB0AAAoq
+UgJ7GgAACgJ7GwAAChuUbxwAAAoqIgIbKB0AAAoqUgJ7GgAACgJ7GwAAChyUbx4AAAoqIgIcKB0A
+AAoqUgJ7GgAACgJ7GwAACh2UbxwAAAoqIgIdKB0AAAoqOgIeA4wHAAABKB8AAAoqWgMsCAIeKCAA
+AAoqch0AAHBzIQAACnoeAigiAAAKKh4CKCMAAAoqOgIoJAAACgIDfQMAAAQqOgIoJAAACgIDfQQA
+AAQqHgIoJAAACioAEzACAC0AAAACAAARfgUAAAQtIHK6AABw0AcAAAIoJgAACm8nAAAKcygAAAoK
+BoAFAAAEfgUAAAQqGn4GAAAEKh4CgAYAAAQqGn4HAAAEKi5zJQAABoAHAAAEKh4CKCsAAAoqALQA
+AADOyu++AQAAAJEAAABsU3lzdGVtLlJlc291cmNlcy5SZXNvdXJjZVJlYWRlciwgbXNjb3JsaWIs
+IFZlcnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1
+NjE5MzRlMDg5I1N5c3RlbS5SZXNvdXJjZXMuUnVudGltZVJlc291cmNlU2V0AgAAAAAAAAAAAAAA
+UEFEUEFEULQAAABCU0pCAQABAAAAAAAMAAAAdjQuMC4zMDMxOQAAAAAFAGwAAAAIBwAAI34AAHQH
+AAAUCQAAI1N0cmluZ3MAAAAAiBAAACwBAAAjVVMAtBEAABAAAAAjR1VJRAAAAMQRAADIAQAAI0Js
+b2IAAAAAAAAAAgAAAVcVogEJAQAAAPolMwAWAAABAAAAIAAAAAgAAAAHAAAAJgAAAA8AAAArAAAA
+DwAAAAIAAAADAAAAFQAAABYAAAABAAAABAAAAAEAAAAAAAoAAQAAAAAABgDuAM0ABgD+AM0ACgAb
+ARQBDgA3ASIBEgB2Ac0ABgCFAc0ACgDiARQBCgCFBHQECgC2BKEECgCPBXUFCgC6BagFCgDRBagF
+CgDuBagFCgANBqgFCgAmBqgFCgA/BqgFCgBaBqgFCgB1BqgFCgCOBqgFCgDHBqcGCgDnBqcGCgAp
+BxQBCgAwBxQBBgBZB80ACgDiBxQBCgAPCPwHCgAsCBQBCgAxCBQBCgBVCKgFDgCBCGsIDgCaCGsI
+CgCvCKcGAAAAAAEAAAAAAAEAAQABABAAMgAAAAUAAQABAAEAEABAAAAACAADAAUAAQAQAEsAAAAJ
+AAMACQABABAAWAAAAA0AAwAeAAEAEABkAAAADQAEAB8AAAAQAG4AeAANAAUAIAAAARAApwB4ABEA
+BwAkAAYAWAATAAYAZAAXAAEAZAReAAEAZAReABEAlQRoABEAwgRsABEABgWKAFAgAAAAAIYYTwEb
+AAEAcCAAAAAAxgCTAR8AAQCVIAAAAADGAaABKQAFAKggAAAAAMYBtAEpAAYAqiAAAAAAxgDLARsA
+BwCyIAAAAADGANYBGwAHALwgAAAAAMYAtAEpAAcABCIAAAAAhhhPARsACAAMIgAAAACGGE8BLwAI
+ABciAAAAAIYI6gE5AAsALCIAAAAAhgj4AT4ACwA1IgAAAACGCA0COQALAEoiAAAAAIYIGQI+AAsA
+UyIAAAAAhggsAjkACwBoIgAAAACGCDoCPgALAHEiAAAAAIYITwI5AAsAhiIAAAAAhghbAj4ACwCP
+IgAAAACGCG4COQALAKQiAAAAAIYIfwI+AAsArSIAAAAAhgiXAjkACwDCIgAAAACGCKYCPgALAMsi
+AAAAAIYIvAJCAAsA4CIAAAAAhgjNAj4ACwDpIgAAAACGCOUCOQALAP4iAAAAAIYI9wI+AAsAByMA
+AAAAhggQA0YACwAWIwAAAACGCCUDTAAMAC0jAAAAAIYAQQM+AA0ANSMAAAAAhgBJAz4ADQA9IwAA
+AACGGE8BYgANAEwjAAAAAIYYTwFiAA4AWyMAAAAAgxhPARsADwBkIwAAAACTCNIEcAAPAJ0jAAAA
+AJMI5gR1AA8ApCMAAAAAkwjyBHoADwCsIwAAAACWCBYFjgAQAL8jAAAAAIYYTwEbABAAsyMAAAAA
+kRjKCA0BEAAAAAEAKgUAAAIAMgUAAAMAPAUAAAQAQwUAAAEAPAUAAAEATQUAAAEATQUAAAEAPAUA
+AAIAUQUAAAMAQwUAAAEAZQUAAAEAZQUAAAEAawUAAAEAawUAAAEAZQVRAE8BmABZAE8BmABhAE8B
+mABpAE8BmABxAE8BmAB5AE8BmACBAE8BmACJAE8BmACRAE8BmACZAE8BmAChAE8BnQCpAE8BGwAJ
+AE8BGwCxAEEHogAJAEgHqQDBAE8BGwAJAMsBGwAJANYBGwA5AE8BnQCxAIAHQgCxAIUHtAA5AJEH
+ugA5AJ0HugA5AKkHugARAE8BLwARADwFyAARAFEFzAApALUH0AARAMAH1gApAMcH2wARANEH4AAR
+ANoHnQDJAE8BmAARAEEDPgARAEkDPgAZAE8BGwDRAE8BGwDZAEMI5gDZAF4I7QBBAE8B8gDxAE8B
+/gABAU8BGwAhAE8BGwAuABsAggEuAGMAqAEuAAsAEQEuABMAWQEuACMAggEuACsAggEuADMAWQEu
+ADsAiAEuAEMAggEuAFsAnwFjAIMArwDhAFMBrwDjACsBrwBpAksBBAGJAksBBAHDAPkABAABAAcA
+EwAIABUAAABVA1EAAABfA1YAAABwA1EAAAB4A1YAAACHA1EAAACRA1YAAACiA1EAAACqA1YAAAC5
+A1EAAADGA1YAAADaA1EAAADlA1YAAAD3A1oAAAAEBFYAAAAYBFEAAAAmBFYAAAA7BFEAAABMBFYA
+AACFBIAAAAD+BIUAAAAiBZMAAgAKAAMAAgALAAUAAgAMAAcAAgANAAkAAgAOAAsAAgAPAA0AAgAQ
+AA8AAgARABEAAgASABMAAgATABUAAgAUABcAAgAVABkAAgAWABsAAgAXAB0AAgAYAB8AAgAZACEA
+AQAaACMAAQAbACUAAgAhACcAAgAiACkAAQAjACkAAgAkACsABIAAAAEAAADpFF+iAAAAAAAABQcA
+AAsAAAAAAAAAAAAAAAEAsAAAAAAABAAAAAAAAAAAAAAACgALAQAAAAAEAAAAAAAAAAAAAAAKABQB
+AAAAAAsAAAAAAAAAAAAAAAEAVQEAAAAAAAAAAAEAAADRCAAAAAAAPE1vZHVsZT4AU0NfNjNjZjMz
+YzYxMDlhNGZmN2E0M2M5MjU3ZTk0NjVmMDEuZGxsAFVzZXJDb21wb25lbnQAU2NyaXB0TWFpbgBJ
+bnB1dDBCdWZmZXIAQ29ubmVjdGlvbnMAVmFyaWFibGVzAFJlc291cmNlcwBTQ182M2NmMzNjNjEw
+OWE0ZmY3YTQzYzkyNTdlOTQ2NWYwMS5Qcm9wZXJ0aWVzAFNldHRpbmdzAE1pY3Jvc29mdC5TcWxT
+ZXJ2ZXIuVHhTY3JpcHQATWljcm9zb2Z0LlNxbFNlcnZlci5EdHMuUGlwZWxpbmUAU2NyaXB0Q29t
+cG9uZW50AFNjcmlwdEJ1ZmZlcgBtc2NvcmxpYgBTeXN0ZW0AT2JqZWN0AFN5c3RlbS5Db25maWd1
+cmF0aW9uAEFwcGxpY2F0aW9uU2V0dGluZ3NCYXNlAC5jdG9yAE1pY3Jvc29mdC5TcWxTZXJ2ZXIu
+UGlwZWxpbmVIb3N0AFBpcGVsaW5lQnVmZmVyAE91dHB1dE5hbWVNYXAAUHJvY2Vzc0lucHV0AElu
+cHV0MF9Qcm9jZXNzSW5wdXQASW5wdXQwX1Byb2Nlc3NJbnB1dFJvdwBQcmVFeGVjdXRlAFBvc3RF
+eGVjdXRlAERlY2ltYWwAZ2V0X1Bhc3NZYXJkcwBnZXRfUGFzc1lhcmRzX0lzTnVsbABnZXRfUGFz
+c1REcwBnZXRfUGFzc1REc19Jc051bGwAZ2V0X1J1c2hZYXJkcwBnZXRfUnVzaFlhcmRzX0lzTnVs
+bABnZXRfUnVzaFREcwBnZXRfUnVzaFREc19Jc051bGwAZ2V0X1JlY2VpdmVZYXJkcwBnZXRfUmVj
+ZWl2ZVlhcmRzX0lzTnVsbABnZXRfUmVjZWl2ZVREcwBnZXRfUmVjZWl2ZVREc19Jc051bGwAZ2V0
+X1Bvc2l0aW9uQ29kZQBnZXRfUG9zaXRpb25Db2RlX0lzTnVsbABnZXRfRmFudGFzeVBvaW50cwBn
+ZXRfRmFudGFzeVBvaW50c19Jc051bGwAc2V0X0NhbGN1bGF0ZWRQb2ludHMAc2V0X0NhbGN1bGF0
+ZWRQb2ludHNfSXNOdWxsAE5leHRSb3cARW5kT2ZSb3dzZXQAUGFzc1lhcmRzAFBhc3NZYXJkc19J
+c051bGwAUGFzc1REcwBQYXNzVERzX0lzTnVsbABSdXNoWWFyZHMAUnVzaFlhcmRzX0lzTnVsbABS
+dXNoVERzAFJ1c2hURHNfSXNOdWxsAFJlY2VpdmVZYXJkcwBSZWNlaXZlWWFyZHNfSXNOdWxsAFJl
+Y2VpdmVURHMAUmVjZWl2ZVREc19Jc051bGwAUG9zaXRpb25Db2RlAFBvc2l0aW9uQ29kZV9Jc051
+bGwARmFudGFzeVBvaW50cwBGYW50YXN5UG9pbnRzX0lzTnVsbABDYWxjdWxhdGVkUG9pbnRzAENh
+bGN1bGF0ZWRQb2ludHNfSXNOdWxsAFBhcmVudENvbXBvbmVudABTeXN0ZW0uUmVzb3VyY2VzAFJl
+c291cmNlTWFuYWdlcgByZXNvdXJjZU1hbgBTeXN0ZW0uR2xvYmFsaXphdGlvbgBDdWx0dXJlSW5m
+bwByZXNvdXJjZUN1bHR1cmUAZ2V0X1Jlc291cmNlTWFuYWdlcgBnZXRfQ3VsdHVyZQBzZXRfQ3Vs
+dHVyZQBDdWx0dXJlAGRlZmF1bHRJbnN0YW5jZQBnZXRfRGVmYXVsdABEZWZhdWx0AElucHV0SUQA
+SW5wdXROYW1lAEJ1ZmZlcgBPdXRwdXRNYXAAUm93AEJ1ZmZlckNvbHVtbkluZGV4ZXMAdmFsdWUA
+Q29tcG9uZW50AFN5c3RlbS5SdW50aW1lLlZlcnNpb25pbmcAVGFyZ2V0RnJhbWV3b3JrQXR0cmli
+dXRlAFN5c3RlbS5SZWZsZWN0aW9uAEFzc2VtYmx5VGl0bGVBdHRyaWJ1dGUAQXNzZW1ibHlEZXNj
+cmlwdGlvbkF0dHJpYnV0ZQBBc3NlbWJseUNvbmZpZ3VyYXRpb25BdHRyaWJ1dGUAQXNzZW1ibHlD
+b21wYW55QXR0cmlidXRlAEFzc2VtYmx5UHJvZHVjdEF0dHJpYnV0ZQBBc3NlbWJseUNvcHlyaWdo
+dEF0dHJpYnV0ZQBBc3NlbWJseVRyYWRlbWFya0F0dHJpYnV0ZQBBc3NlbWJseUN1bHR1cmVBdHRy
+aWJ1dGUAQXNzZW1ibHlWZXJzaW9uQXR0cmlidXRlAFN5c3RlbS5SdW50aW1lLkNvbXBpbGVyU2Vy
+dmljZXMAQ29tcGlsYXRpb25SZWxheGF0aW9uc0F0dHJpYnV0ZQBSdW50aW1lQ29tcGF0aWJpbGl0
+eUF0dHJpYnV0ZQBTQ182M2NmMzNjNjEwOWE0ZmY3YTQzYzkyNTdlOTQ2NWYwMQBTdHJpbmcAU3Ry
+aW5nQ29tcGFyaXNvbgBFcXVhbHMAR2V0Q29sdW1uSW5kZXhlcwBTU0lTU2NyaXB0Q29tcG9uZW50
+RW50cnlQb2ludEF0dHJpYnV0ZQBUcmltAG9wX0VxdWFsaXR5AG9wX011bHRpcGx5AG9wX0FkZGl0
+aW9uAG9wX0RpdmlzaW9uAEdldERlY2ltYWwASXNOdWxsAEdldFN0cmluZwBzZXRfSXRlbQBTZXRO
+dWxsAEludmFsaWRPcGVyYXRpb25FeGNlcHRpb24AU3lzdGVtLkRpYWdub3N0aWNzAERlYnVnZ2Vy
+Tm9uVXNlckNvZGVBdHRyaWJ1dGUAVHlwZQBSdW50aW1lVHlwZUhhbmRsZQBHZXRUeXBlRnJvbUhh
+bmRsZQBBc3NlbWJseQBnZXRfQXNzZW1ibHkAU3lzdGVtLkNvbXBvbmVudE1vZGVsAEVkaXRvckJy
+b3dzYWJsZUF0dHJpYnV0ZQBFZGl0b3JCcm93c2FibGVTdGF0ZQBDb21waWxlckdlbmVyYXRlZEF0
+dHJpYnV0ZQAuY2N0b3IAU0NfNjNjZjMzYzYxMDlhNGZmN2E0M2M5MjU3ZTk0NjVmMDEuUHJvcGVy
+dGllcy5SZXNvdXJjZXMucmVzb3VyY2VzAAAPSQBuAHAAdQB0ACAAMAAAA0sAAAdEAFMAVAAAgJtJ
+AHMATgB1AGwAbAAgAHAAcgBvAHAAZQByAHQAeQAgAGMAYQBuAG4AbwB0ACAAYgBlACAAcwBlAHQA
+IAB0AG8AIABGAGEAbABzAGUALgAgAEEAcwBzAGkAZwBuACAAYQAgAHYAYQBsAHUAZQAgAHQAbwAg
+AHQAaABlACAAYwBvAGwAdQBtAG4AIABpAG4AcwB0AGUAYQBkAC4AAHFTAEMAXwA2ADMAYwBmADMA
+MwBjADYAMQAwADkAYQA0AGYAZgA3AGEANAAzAGMAOQAyADUANwBlADkANAA2ADUAZgAwADEALgBQ
+AHIAbwBwAGUAcgB0AGkAZQBzAC4AUgBlAHMAbwB1AHIAYwBlAHMAAIrt+q62x+dNmQUJaInMwysA
+CImEXc2AgMyRCLd6XFYZNOCJAwYSFAMGEhgDIAABCSAEAQgOEhUSGQUgAQESEAkgAwESFR0IEhkE
+IAARHQMgAAIDIAAOBSABAREdBCABAQIEKAARHQMoAAIDKAAOAwYSBQUgAQESBQMGEiEDBhIlBAAA
+EiEEAAASJQUAAQESJQQIABIhBAgAEiUDBhIgBAAAEiAECAASIAQgAQEOBCABAQgGIAICDhFdBSAB
+HQgIBAEAAAAFAAICDg4IAAIRHREdER0EBwERHQMGEhUDBh0IBSABER0IBCABAggEIAEOCAUgAgEI
+HAYAARJtEXEEIAASdQYgAgEOEnUEBwESIQUgAQERfQgBAAIAAAAAAAMAAAFHAQAaLk5FVEZyYW1l
+d29yayxWZXJzaW9uPXY0LjABAFQOFEZyYW1ld29ya0Rpc3BsYXlOYW1lEC5ORVQgRnJhbWV3b3Jr
+IDQoAQAjU0NfNjNjZjMzYzYxMDlhNGZmN2E0M2M5MjU3ZTk0NjVmMDEAAAUBAAAAABYBABFDb3B5
+cmlnaHQgQCAgMjAxNAAACAEACAAAAAAAHgEAAQBUAhZXcmFwTm9uRXhjZXB0aW9uVGhyb3dzAQA0
+OAAAAAAAAAAAAABOOAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQDgAAAAAAAAAAAAAAABfQ29y
+RGxsTWFpbgBtc2NvcmVlLmRsbAAAAAAA/yUAIAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
@@ -994,8 +1024,42 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AQAQAAAAGAAAgAAAAAAAAAAAAAAAAAAAAQABAAAAMAAAgAAAAAAAAAAAAAAAAAAAAQAAAAAASAAA
+AFhAAACwAwAAAAAAAAAAAACwAzQAAABWAFMAXwBWAEUAUgBTAEkATwBOAF8ASQBOAEYATwAAAAAA
+vQTv/gAAAQAAAAEAX6LpFAAAAQBfoukUPwAAAAAAAAAEAAAAAgAAAAAAAAAAAAAAAAAAAEQAAAAB
+AFYAYQByAEYAaQBsAGUASQBuAGYAbwAAAAAAJAAEAAAAVAByAGEAbgBzAGwAYQB0AGkAbwBuAAAA
+AAAAALAEEAMAAAEAUwB0AHIAaQBuAGcARgBpAGwAZQBJAG4AZgBvAAAA7AIAAAEAMAAwADAAMAAw
+ADQAYgAwAAAAcAAkAAEARgBpAGwAZQBEAGUAcwBjAHIAaQBwAHQAaQBvAG4AAAAAAFMAQwBfADYA
+MwBjAGYAMwAzAGMANgAxADAAOQBhADQAZgBmADcAYQA0ADMAYwA5ADIANQA3AGUAOQA0ADYANQBm
+ADAAMQAAAEAADwABAEYAaQBsAGUAVgBlAHIAcwBpAG8AbgAAAAAAMQAuADAALgA1ADMANQAzAC4A
+NAAxADUANgA3AAAAAABwACgAAQBJAG4AdABlAHIAbgBhAGwATgBhAG0AZQAAAFMAQwBfADYAMwBj
+AGYAMwAzAGMANgAxADAAOQBhADQAZgBmADcAYQA0ADMAYwA5ADIANQA3AGUAOQA0ADYANQBmADAA
+MQAuAGQAbABsAAAASAASAAEATABlAGcAYQBsAEMAbwBwAHkAcgBpAGcAaAB0AAAAQwBvAHAAeQBy
+AGkAZwBoAHQAIABAACAAIAAyADAAMQA0AAAAeAAoAAEATwByAGkAZwBpAG4AYQBsAEYAaQBsAGUA
+bgBhAG0AZQAAAFMAQwBfADYAMwBjAGYAMwAzAGMANgAxADAAOQBhADQAZgBmADcAYQA0ADMAYwA5
+ADIANQA3AGUAOQA0ADYANQBmADAAMQAuAGQAbABsAAAAaAAkAAEAUAByAG8AZAB1AGMAdABOAGEA
+bQBlAAAAAABTAEMAXwA2ADMAYwBmADMAMwBjADYAMQAwADkAYQA0AGYAZgA3AGEANAAzAGMAOQAy
+ADUANwBlADkANAA2ADUAZgAwADEAAABEAA8AAQBQAHIAbwBkAHUAYwB0AFYAZQByAHMAaQBvAG4A
+AAAxAC4AMAAuADUAMwA1ADMALgA0ADEANQA2ADcAAAAAAEgADwABAEEAcwBzAGUAbQBiAGwAeQAg
+AFYAZQByAHMAaQBvAG4AAAAxAC4AMAAuADUAMwA1ADMALgA0ADEANQA2ADcAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAMAAAAYDgAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA]]></arrayElement>
                   </arrayElements>
                 </property>
                 <property
@@ -1031,7 +1095,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
                   dataType="System.String"
                   description="Checksum to match component metedata against compiled codes."
                   name="MetadataChecksum"
-                  typeConverter="NOTBROWSABLE">03b948ece393fe018cf1abfa6f6dfbd4</property>
+                  typeConverter="NOTBROWSABLE">69d35d4812ce8814259733689618c182</property>
                 <property
                   dataType="System.String"
                   name="UserComponentTypeName">Microsoft.SqlServer.Dts.Pipeline.ScriptComponentHost, Microsoft.SqlServer.TxScript, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91</property>
@@ -1084,6 +1148,20 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
                       cachedPrecision="10"
                       cachedScale="2"
                       lineageId="Package\Load Staged FantasyPro PlayerProjections\Union All.Outputs[Union All Output 1].Columns[ReceiveTDs]" />
+                    <inputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Calculate Fantasy Points.Inputs[Input 0].Columns[PositionCode]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="3"
+                      cachedName="PositionCode"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Union All.Outputs[Union All Output 1].Columns[PositionCode]" />
+                    <inputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Calculate Fantasy Points.Inputs[Input 0].Columns[FantasyPoints]"
+                      cachedDataType="numeric"
+                      cachedName="FantasyPoints"
+                      cachedPrecision="10"
+                      cachedScale="2"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Union All.Outputs[Union All Output 1].Columns[FantasyPoints]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -1101,6 +1179,105 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
                       name="CalculatedPoints"
                       precision="18"
                       scale="1" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Load Staged FantasyPro PlayerProjections\Derive K Column"
+              componentClassID="{49928E82-9C4E-49F0-AABE-3812B82707EC}"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derive K Column"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\Load Staged FantasyPro PlayerProjections\Derive K Column.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Load Staged FantasyPro PlayerProjections\Derive K Column.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\Load Staged FantasyPro PlayerProjections\Derive K Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Derive K Column.Outputs[Derived Column Output].Columns[PositionCode]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="2"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Derive K Column.Outputs[Derived Column Output].Columns[PositionCode]"
+                      name="PositionCode"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">@[User::KPositionCode]</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">@[User::KPositionCode]</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Derive K Column.Outputs[Derived Column Output].Columns[LeagueYear]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="50"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Derive K Column.Outputs[Derived Column Output].Columns[LeagueYear]"
+                      name="LeagueYear"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">@[User::LeagueYear]</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">@[User::LeagueYear]</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\Load Staged FantasyPro PlayerProjections\Derive K Column.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\Load Staged FantasyPro PlayerProjections\Derive K Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Derive K Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Derive K Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Derive K Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Derive K Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -1495,6 +1672,256 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
                       refId="Package\Load Staged FantasyPro PlayerProjections\Derived QB Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
                       dataType="i4"
                       lineageId="Package\Load Staged FantasyPro PlayerProjections\Derived QB Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks"
+              componentClassID="{165A526D-D5DE-47FF-96A6-F8274C19826B}"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="Get Unloaded Fantasy Pro Ks"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">EXEC dbo.GetFantasyProKs</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Connections[OleDbConnection]"
+                  connectionManagerID="{22E82E94-92F5-4BA9-928E-07A6DF6D051E}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[FantasyVBD_Staging]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[Id]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[Id]"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[Id]"
+                      name="Id"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[PlayerName]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[PlayerName]"
+                      length="50"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[PlayerName]"
+                      name="PlayerName"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[TeamCode]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[TeamCode]"
+                      length="5"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[TeamCode]"
+                      name="TeamCode"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[FantasyPoints]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[FantasyPoints]"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[FantasyPoints]"
+                      name="FantasyPoints"
+                      precision="10"
+                      scale="2"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[FieldGoals]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[FieldGoals]"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[FieldGoals]"
+                      name="FieldGoals"
+                      precision="10"
+                      scale="2"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[FieldGoalAttempts]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[FieldGoalAttempts]"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[FieldGoalAttempts]"
+                      name="FieldGoalAttempts"
+                      precision="10"
+                      scale="2"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[ExtraPoints]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[ExtraPoints]"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[ExtraPoints]"
+                      name="ExtraPoints"
+                      precision="10"
+                      scale="2"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[Id]"
+                      dataType="i4"
+                      name="Id" />
+                    <externalMetadataColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[PlayerName]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="PlayerName" />
+                    <externalMetadataColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[TeamCode]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="TeamCode" />
+                    <externalMetadataColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[FantasyPoints]"
+                      dataType="numeric"
+                      name="FantasyPoints"
+                      precision="10"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[FieldGoals]"
+                      dataType="numeric"
+                      name="FieldGoals"
+                      precision="10"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[FieldGoalAttempts]"
+                      dataType="numeric"
+                      name="FieldGoalAttempts"
+                      precision="10"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[ExtraPoints]"
+                      dataType="numeric"
+                      name="ExtraPoints"
+                      precision="10"
+                      scale="2" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[Id]"
+                      dataType="i4"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[Id]"
+                      name="Id" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[PlayerName]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[PlayerName]"
+                      name="PlayerName" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[TeamCode]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[TeamCode]"
+                      name="TeamCode" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[FieldGoals]"
+                      dataType="numeric"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[FieldGoals]"
+                      name="FieldGoals"
+                      precision="10"
+                      scale="2" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[FieldGoalAttempts]"
+                      dataType="numeric"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[FieldGoalAttempts]"
+                      name="FieldGoalAttempts"
+                      precision="10"
+                      scale="2" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[ExtraPoints]"
+                      dataType="numeric"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[ExtraPoints]"
+                      name="ExtraPoints"
+                      precision="10"
+                      scale="2" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[FantasyPoints]"
+                      dataType="numeric"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[FantasyPoints]"
+                      name="FantasyPoints"
+                      precision="10"
+                      scale="2" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -5236,9 +5663,104 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
                 </input>
                 <input
                   refId="Package\Load Staged FantasyPro PlayerProjections\Union All.Inputs[Union All Input 5]"
-                  dangling="true"
                   hasSideEffects="true"
                   name="Union All Input 5">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Union All.Inputs[Union All Input 5].Columns[Id]"
+                      cachedDataType="i4"
+                      cachedName="Id"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[Id]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Load Staged FantasyPro PlayerProjections\Union All.Outputs[Union All Output 1].Columns[Id]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Union All.Inputs[Union All Input 5].Columns[PlayerName]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="PlayerName"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[PlayerName]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Load Staged FantasyPro PlayerProjections\Union All.Outputs[Union All Output 1].Columns[PlayerName]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Union All.Inputs[Union All Input 5].Columns[TeamCode]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="5"
+                      cachedName="TeamCode"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[TeamCode]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Load Staged FantasyPro PlayerProjections\Union All.Outputs[Union All Output 1].Columns[TeamCode]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Union All.Inputs[Union All Input 5].Columns[FantasyPoints]"
+                      cachedDataType="numeric"
+                      cachedName="FantasyPoints"
+                      cachedPrecision="10"
+                      cachedScale="2"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[FantasyPoints]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Load Staged FantasyPro PlayerProjections\Union All.Outputs[Union All Output 1].Columns[FantasyPoints]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Union All.Inputs[Union All Input 5].Columns[LeagueYear]"
+                      cachedDataType="wstr"
+                      cachedLength="4"
+                      cachedName="LeagueYear"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Derive K Column.Outputs[Derived Column Output].Columns[LeagueYear]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Load Staged FantasyPro PlayerProjections\Union All.Outputs[Union All Output 1].Columns[LeagueYear]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\Load Staged FantasyPro PlayerProjections\Union All.Inputs[Union All Input 5].Columns[PositionCode]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="2"
+                      cachedName="PositionCode"
+                      lineageId="Package\Load Staged FantasyPro PlayerProjections\Derive K Column.Outputs[Derived Column Output].Columns[PositionCode]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Load Staged FantasyPro PlayerProjections\Union All.Outputs[Union All Output 1].Columns[PositionCode]}</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+                <input
+                  refId="Package\Load Staged FantasyPro PlayerProjections\Union All.Inputs[Union All Input 6]"
+                  dangling="true"
+                  hasSideEffects="true"
+                  name="Union All Input 6">
                   <externalMetadataColumns />
                 </input>
               </inputs>
@@ -5399,6 +5921,11 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
               name="Derived Column Output"
               startId="Package\Load Staged FantasyPro PlayerProjections\Derived QB Column.Outputs[Derived Column Output]" />
             <path
+              refId="Package\Load Staged FantasyPro PlayerProjections.Paths[Derived Column Output4]"
+              endId="Package\Load Staged FantasyPro PlayerProjections\Union All.Inputs[Union All Input 5]"
+              name="Derived Column Output"
+              startId="Package\Load Staged FantasyPro PlayerProjections\Derive K Column.Outputs[Derived Column Output]" />
+            <path
               refId="Package\Load Staged FantasyPro PlayerProjections.Paths[Lookup Match Output]"
               endId="Package\Load Staged FantasyPro PlayerProjections\Lookup Player.Inputs[Lookup Input]"
               name="Lookup Match Output"
@@ -5428,6 +5955,11 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
               endId="Package\Load Staged FantasyPro PlayerProjections\Derive TE Column.Inputs[Derived Column Input]"
               name="OLE DB Source Output"
               startId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro TEs.Outputs[OLE DB Source Output]" />
+            <path
+              refId="Package\Load Staged FantasyPro PlayerProjections.Paths[OLE DB Source Output4]"
+              endId="Package\Load Staged FantasyPro PlayerProjections\Derive K Column.Inputs[Derived Column Input]"
+              name="OLE DB Source Output"
+              startId="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output]" />
             <path
               refId="Package\Load Staged FantasyPro PlayerProjections.Paths[Output 0]"
               endId="Package\Load Staged FantasyPro PlayerProjections\Lookup LeagueYear ID.Inputs[Lookup Input]"
@@ -5461,6 +5993,105 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
         <pipeline
           version="1">
           <components>
+            <component
+              refId="Package\Load Staged FantasyPro Players\Derive K Column"
+              componentClassID="{49928E82-9C4E-49F0-AABE-3812B82707EC}"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derive K Column"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\Load Staged FantasyPro Players\Derive K Column.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Load Staged FantasyPro Players\Derive K Column.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\Load Staged FantasyPro Players\Derive K Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro Players\Derive K Column.Outputs[Derived Column Output].Columns[PositionCode]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="2"
+                      lineageId="Package\Load Staged FantasyPro Players\Derive K Column.Outputs[Derived Column Output].Columns[PositionCode]"
+                      name="PositionCode"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">@[User::KPositionCode]</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">@[User::KPositionCode]</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro Players\Derive K Column.Outputs[Derived Column Output].Columns[LeagueYear]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="50"
+                      lineageId="Package\Load Staged FantasyPro Players\Derive K Column.Outputs[Derived Column Output].Columns[LeagueYear]"
+                      name="LeagueYear"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">@[User::LeagueYear]</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">@[User::LeagueYear]</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\Load Staged FantasyPro Players\Derive K Column.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\Load Staged FantasyPro Players\Derive K Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro Players\Derive K Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Load Staged FantasyPro Players\Derive K Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro Players\Derive K Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Load Staged FantasyPro Players\Derive K Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
             <component
               refId="Package\Load Staged FantasyPro Players\Derive RB Column"
               componentClassID="{49928E82-9C4E-49F0-AABE-3812B82707EC}"
@@ -5850,6 +6481,256 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
                       refId="Package\Load Staged FantasyPro Players\Derived QB Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
                       dataType="i4"
                       lineageId="Package\Load Staged FantasyPro Players\Derived QB Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks"
+              componentClassID="{165A526D-D5DE-47FF-96A6-F8274C19826B}"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="Get Unloaded Fantasy Pro Ks"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">EXEC dbo.GetFantasyProKs</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Connections[OleDbConnection]"
+                  connectionManagerID="{22E82E94-92F5-4BA9-928E-07A6DF6D051E}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[FantasyVBD_Staging]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[Id]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[Id]"
+                      lineageId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[Id]"
+                      name="Id"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[PlayerName]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[PlayerName]"
+                      length="50"
+                      lineageId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[PlayerName]"
+                      name="PlayerName"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[TeamCode]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[TeamCode]"
+                      length="5"
+                      lineageId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[TeamCode]"
+                      name="TeamCode"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[FantasyPoints]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[FantasyPoints]"
+                      lineageId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[FantasyPoints]"
+                      name="FantasyPoints"
+                      precision="10"
+                      scale="2"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[FieldGoals]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[FieldGoals]"
+                      lineageId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[FieldGoals]"
+                      name="FieldGoals"
+                      precision="10"
+                      scale="2"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[FieldGoalAttempts]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[FieldGoalAttempts]"
+                      lineageId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[FieldGoalAttempts]"
+                      name="FieldGoalAttempts"
+                      precision="10"
+                      scale="2"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[ExtraPoints]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[ExtraPoints]"
+                      lineageId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[ExtraPoints]"
+                      name="ExtraPoints"
+                      precision="10"
+                      scale="2"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[Id]"
+                      dataType="i4"
+                      name="Id" />
+                    <externalMetadataColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[PlayerName]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="PlayerName" />
+                    <externalMetadataColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[TeamCode]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="TeamCode" />
+                    <externalMetadataColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[FantasyPoints]"
+                      dataType="numeric"
+                      name="FantasyPoints"
+                      precision="10"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[FieldGoals]"
+                      dataType="numeric"
+                      name="FieldGoals"
+                      precision="10"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[FieldGoalAttempts]"
+                      dataType="numeric"
+                      name="FieldGoalAttempts"
+                      precision="10"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].ExternalColumns[ExtraPoints]"
+                      dataType="numeric"
+                      name="ExtraPoints"
+                      precision="10"
+                      scale="2" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[Id]"
+                      dataType="i4"
+                      lineageId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[Id]"
+                      name="Id" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[PlayerName]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      lineageId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[PlayerName]"
+                      name="PlayerName" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[TeamCode]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      lineageId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[TeamCode]"
+                      name="TeamCode" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[FieldGoals]"
+                      dataType="numeric"
+                      lineageId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[FieldGoals]"
+                      name="FieldGoals"
+                      precision="10"
+                      scale="2" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[FieldGoalAttempts]"
+                      dataType="numeric"
+                      lineageId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[FieldGoalAttempts]"
+                      name="FieldGoalAttempts"
+                      precision="10"
+                      scale="2" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[ExtraPoints]"
+                      dataType="numeric"
+                      lineageId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[ExtraPoints]"
+                      name="ExtraPoints"
+                      precision="10"
+                      scale="2" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[FantasyPoints]"
+                      dataType="numeric"
+                      lineageId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[FantasyPoints]"
+                      name="FantasyPoints"
+                      precision="10"
+                      scale="2" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -9756,9 +10637,105 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
                 </input>
                 <input
                   refId="Package\Load Staged FantasyPro Players\Union All.Inputs[Union All Input 5]"
-                  dangling="true"
                   hasSideEffects="true"
                   name="Union All Input 5">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Load Staged FantasyPro Players\Union All.Inputs[Union All Input 5].Columns[Id]"
+                      cachedDataType="i4"
+                      cachedName="Id"
+                      lineageId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[Id]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Load Staged FantasyPro Players\Union All.Outputs[Union All Output 1].Columns[Id]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\Load Staged FantasyPro Players\Union All.Inputs[Union All Input 5].Columns[PlayerName]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="PlayerName"
+                      lineageId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[PlayerName]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Load Staged FantasyPro Players\Union All.Outputs[Union All Output 1].Columns[PlayerName]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\Load Staged FantasyPro Players\Union All.Inputs[Union All Input 5].Columns[TeamCode]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="5"
+                      cachedName="TeamCode"
+                      lineageId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[TeamCode]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Load Staged FantasyPro Players\Union All.Outputs[Union All Output 1].Columns[TeamCode]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\Load Staged FantasyPro Players\Union All.Inputs[Union All Input 5].Columns[FantasyPoints]"
+                      cachedDataType="numeric"
+                      cachedName="FantasyPoints"
+                      cachedPrecision="10"
+                      cachedScale="2"
+                      lineageId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output].Columns[FantasyPoints]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Load Staged FantasyPro Players\Union All.Outputs[Union All Output 1].Columns[FantasyPoints]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\Load Staged FantasyPro Players\Union All.Inputs[Union All Input 5].Columns[LeagueYear]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="LeagueYear"
+                      lineageId="Package\Load Staged FantasyPro Players\Derive K Column.Outputs[Derived Column Output].Columns[LeagueYear]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Load Staged FantasyPro Players\Union All.Outputs[Union All Output 1].Columns[LeagueYear]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\Load Staged FantasyPro Players\Union All.Inputs[Union All Input 5].Columns[PositionCode]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="2"
+                      cachedName="PositionCode"
+                      lineageId="Package\Load Staged FantasyPro Players\Derive K Column.Outputs[Derived Column Output].Columns[PositionCode]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Load Staged FantasyPro Players\Union All.Outputs[Union All Output 1].Columns[PositionCode]}</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+                <input
+                  refId="Package\Load Staged FantasyPro Players\Union All.Inputs[Union All Input 6]"
+                  dangling="true"
+                  hasSideEffects="true"
+                  name="Union All Input 6">
                   <externalMetadataColumns />
                 </input>
               </inputs>
@@ -9919,6 +10896,11 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
               name="Derived Column Output"
               startId="Package\Load Staged FantasyPro Players\Derive TE Column.Outputs[Derived Column Output]" />
             <path
+              refId="Package\Load Staged FantasyPro Players.Paths[Derived Column Output4]"
+              endId="Package\Load Staged FantasyPro Players\Union All.Inputs[Union All Input 5]"
+              name="Derived Column Output"
+              startId="Package\Load Staged FantasyPro Players\Derive K Column.Outputs[Derived Column Output]" />
+            <path
               refId="Package\Load Staged FantasyPro Players.Paths[Lookup Match Output]"
               endId="Package\Load Staged FantasyPro Players\Lookup FantasyVBD Team ID.Inputs[Lookup Input]"
               name="Lookup Match Output"
@@ -9959,6 +10941,11 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
               name="OLE DB Source Output"
               startId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro TEs.Outputs[OLE DB Source Output]" />
             <path
+              refId="Package\Load Staged FantasyPro Players.Paths[OLE DB Source Output4]"
+              endId="Package\Load Staged FantasyPro Players\Derive K Column.Inputs[Derived Column Input]"
+              name="OLE DB Source Output"
+              startId="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks.Outputs[OLE DB Source Output]" />
+            <path
               refId="Package\Load Staged FantasyPro Players.Paths[Output 0]"
               endId="Package\Load Staged FantasyPro Players\Lookup LeagueYear ID.Inputs[Lookup Input]"
               name="Output 0"
@@ -9973,20 +10960,75 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
-      DTS:refId="Package\Update Value Points for LeagueYear"
+      DTS:refId="Package\Update Rank by Position for LeagueYear"
       DTS:CreationName="Microsoft.SqlServer.Dts.Tasks.ExecuteSQLTask.ExecuteSQLTask, Microsoft.SqlServer.SQLTask, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"
       DTS:Description="Execute SQL Task"
-      DTS:Disabled="True"
       DTS:DTSID="{BD52822A-5E2A-423C-AC24-19B55B727FC2}"
       DTS:ExecutableType="Microsoft.SqlServer.Dts.Tasks.ExecuteSQLTask.ExecuteSQLTask, Microsoft.SqlServer.SQLTask, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"
       DTS:LocaleID="-1"
-      DTS:ObjectName="Update Value Points for LeagueYear"
+      DTS:ObjectName="Update Rank by Position for LeagueYear"
       DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2012; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
       DTS:ThreadHint="0">
       <DTS:Variables />
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
-          SQLTask:Connection="{CEE2F619-8C11-42A9-B664-B47EBB404499}" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:Connection="{CEE2F619-8C11-42A9-B664-B47EBB404499}"
+          SQLTask:SqlStatementSource="UPDATE P  &#xA;SET P.[Rank] = SUB.PositionRank&#xA;from dbo.[PlayerProjection] P INNER JOIN&#xA;(select Row_Number() OVER (Partition By Proj.LeagueYearID, POS.[NormalizedPositionCode] order by FantasyPoints DESC) as [PositionRank],&#xA; Player.Id as [PlayerId],&#xA; FantasyPoints,&#xA; Player.PositionId,&#xA; Proj.LeagueYearId&#xA; from [dbo].[PlayerProjection] PROJ INNER JOIN dbo.[Player] Player ON PROJ.PlayerId = Player.Id&#xA; INNER JOIN dbo.[Position] POS ON Player.PositionId = POS.Id) SUB&#xA; ON P.PLayerId = SUB.PlayerID and P.LeagueYearId = Sub.LeagueYearId&#xA; INNER JOIN dbo.LeagueYear LY ON P.LeagueYearId = LY.Id &#xA;Where Ly.Season = ?&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="User::LeagueYear"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="129"
+            SQLTask:ParameterSize="4" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update ValuePoints"
+      DTS:CreationName="Microsoft.SqlServer.Dts.Tasks.ExecuteSQLTask.ExecuteSQLTask, Microsoft.SqlServer.SQLTask, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{E568A9E7-FA6D-4AA0-B1CD-7A9ED7E8E830}"
+      DTS:ExecutableType="Microsoft.SqlServer.Dts.Tasks.ExecuteSQLTask.ExecuteSQLTask, Microsoft.SqlServer.SQLTask, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update ValuePoints"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2012; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{CEE2F619-8C11-42A9-B664-B47EBB404499}"
+          SQLTask:SqlStatementSource="UPDATE Projection&#xA; SET Projection.VALUEPOINTS = Projection.FantasyPoints - T.ValuePoints&#xA; from dbo.PlayerProjection Projection &#xA; INNER JOIN dbo.[Player] Player ON Player.Id = Projection.PlayerId&#xA; INNER JOIN dbo.[Position] Position ON Player.PositionId = Position.Id&#xA; INNER JOIN dbo.[LeagueYear] LeagueYear ON Projection.LeagueYearId = LeagueYear.Id&#xA; INNER JOIN &#xA; (Select lyp.LeagueYearId, normpos.NormalizedPositionCode, pp.FantasyPoints as [ValuePoints]&#xA; from dbo.[PlayerProjection] pp&#xA; INNER JOIN dbo.[Player] p ON pp.PlayerId = p.Id&#xA; INNER JOIN dbo.[Position] pos on p.PositionId = pos.Id&#xA; INNER JOIN dbo.[Position] normpos on normpos.PositionCode = pos.NormalizedPositionCode&#xA; INNER JOIN dbo.[LeagueYearPosition] lyp ON  pp.LeagueYearId = lyp.LeagueYearId and lyp.PositionId = normpos.Id&#xA; Where [Rank] = (10 * lyp.NumberOfStarters)) T&#xA; ON Projection.LeagueYearID = T.LeagueYearId and Position.NormalizedPositionCode = T.NormalizedPositionCode&#xA; Where LeagueYear.Season = ?&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="User::LeagueYear"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="129"
+            SQLTask:ParameterSize="4" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update ValuePointsDelta"
+      DTS:CreationName="Microsoft.SqlServer.Dts.Tasks.ExecuteSQLTask.ExecuteSQLTask, Microsoft.SqlServer.SQLTask, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{BDD0EBB6-A98E-4B02-9E45-A1173BEBAA6D}"
+      DTS:ExecutableType="Microsoft.SqlServer.Dts.Tasks.ExecuteSQLTask.ExecuteSQLTask, Microsoft.SqlServer.SQLTask, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update ValuePointsDelta"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2012; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{CEE2F619-8C11-42A9-B664-B47EBB404499}"
+          SQLTask:SqlStatementSource="&#xA;UPDATE Projection&#xA;SET Projection.ValueDeltaPoints = Projection.ValuePoints - NextProjection.ValuePoints&#xA;from dbo.[PlayerProjection] Projection&#xA;INNER JOIN dbo.[Player] Player ON Projection.PlayerId = [Player].Id&#xA;INNER JOIN dbo.[Position] Position ON Player.PositionId = Position.Id&#xA;INNER JOIN dbo.[LeagueYear] LeagueYear ON Projection.LeagueYearId = LeagueYear.Id&#xA;INNER JOIN dbo.[PlayerProjection] NextProjection ON NextProjection.[Rank] = Projection.[Rank] + 1 AND NextProjection.LeagueYearId = Projection.LeagueYearId&#xA;INNER JOIN dbo.[Player] NextPlayer ON NextProjection.PlayerID = NextPlayer.Id&#xA;INNER JOIN dbo.[Position] NextPosition ON NextPlayer.PositionId = NextPosition.Id&#xA;WHERE Position.NormalizedPositionCode = NextPosition.NormalizedPositionCode AND&#xA;LeagueYear.Season = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="User::LeagueYear"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="129"
+            SQLTask:ParameterSize="4" />
+        </SQLTask:SqlTaskData>
       </DTS:ObjectData>
     </DTS:Executable>
   </DTS:Executables>
@@ -10006,7 +11048,23 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
       DTS:From="Package\Load Staged FantasyPro PlayerProjections"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 1"
-      DTS:To="Package\Update Value Points for LeagueYear" />
+      DTS:To="Package\Update Rank by Position for LeagueYear" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{BD85E94B-9813-4872-BFC2-0541002BA347}"
+      DTS:From="Package\Update Rank by Position for LeagueYear"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\Update ValuePoints" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{C110974F-E061-40DD-A2D2-3AAE52138C51}"
+      DTS:From="Package\Update ValuePoints"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 3"
+      DTS:To="Package\Update ValuePointsDelta" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
 <!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
@@ -10019,15 +11077,19 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="276,42"
+          Id="Package\Load Staged FantasyPro PlayerProjections"
+          TopLeft="43,126" />
         <NodeLayout
           Size="231,42"
           Id="Package\Load Staged FantasyPro Players"
           TopLeft="47,19" />
         <NodeLayout
-          Size="276,42"
-          Id="Package\Load Staged FantasyPro PlayerProjections"
-          TopLeft="43,126" />
+          Size="269,42"
+          Id="Package\Update Rank by Position for LeagueYear"
+          TopLeft="41,222" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
           TopLeft="162.5,61">
@@ -10062,36 +11124,84 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="248,42"
-          Id="Package\Update Value Points for LeagueYear"
-          TopLeft="41,222" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 1]"
-          TopLeft="181,168">
+          TopLeft="178.25,168">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-16,54"
+              EndConnector="0,54"
               Start="0,0"
-              End="-16,46.5">
+              End="0,46.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,23" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,23"
-                    Point2="0,27"
-                    Point3="-4,27" />
+                    End="0,46.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="170,42"
+          Id="Package\Update ValuePoints"
+          TopLeft="96,325" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="178.25,264">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,61"
+              Start="0,0"
+              End="0,53.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
                   <mssgle:LineSegment
-                    End="-12,27" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-12,27"
-                    Point2="-16,27"
-                    Point3="-16,31" />
+                    End="0,53.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="195,42"
+          Id="Package\Update ValuePointsDelta"
+          TopLeft="92,414" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="181,367">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="8.5,47"
+              Start="0,0"
+              End="8.5,39.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
                   <mssgle:LineSegment
-                    End="-16,46.5" />
+                    End="0,19.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,19.5"
+                    Point2="0,23.5"
+                    Point3="4,23.5" />
+                  <mssgle:LineSegment
+                    End="4.5,23.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="4.5,23.5"
+                    Point2="8.5,23.5"
+                    Point3="8.5,27.5" />
+                  <mssgle:LineSegment
+                    End="8.5,39.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -10104,349 +11214,93 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
     </LayoutInfo>
   </Package>
   <TaskHost
-    design-time-name="Package\Load Staged FantasyPro Players">
+    design-time-name="Package\Load Staged FantasyPro PlayerProjections">
     <LayoutInfo>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="166,42"
-          Id="Package\Load Staged FantasyPro Players\Parse PlayerName"
-          TopLeft="350,277.666666666667" />
-        <NodeLayout
           Size="188,42"
-          Id="Package\Load Staged FantasyPro Players\Lookup LeagueYear ID"
-          TopLeft="340,360.666666666667" />
-        <NodeLayout
-          Size="169,42"
-          Id="Package\Load Staged FantasyPro Players\Derive WR Column"
-          TopLeft="660,96" />
-        <NodeLayout
-          Size="224,42"
-          Id="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro RBs"
-          TopLeft="362,8" />
-        <NodeLayout
-          Size="155,42"
-          Id="Package\Load Staged FantasyPro Players\Lookup Position"
-          TopLeft="353,520.666666666667" />
-        <NodeLayout
-          Size="219,42"
-          Id="Package\Load Staged FantasyPro Players\Lookup FantasyVBD Team ID"
-          TopLeft="329,613.666666666667" />
+          Id="Package\Load Staged FantasyPro PlayerProjections\Lookup LeagueYear ID"
+          TopLeft="412,464.666666666667" />
         <NodeLayout
           Size="165,42"
-          Id="Package\Load Staged FantasyPro Players\Derive TE Column"
-          TopLeft="910,100" />
+          Id="Package\Load Staged FantasyPro PlayerProjections\Derive TE Column"
+          TopLeft="982,204" />
         <NodeLayout
           Size="225,42"
-          Id="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro QBs"
-          TopLeft="51,4" />
-        <NodeLayout
-          Size="123,42"
-          Id="Package\Load Staged FantasyPro Players\Union All"
-          TopLeft="365,181" />
-        <NodeLayout
-          Size="173,42"
-          Id="Package\Load Staged FantasyPro Players\OLE DB Destination"
-          TopLeft="345,708.666666666666" />
+          Id="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro QBs"
+          TopLeft="123,108" />
         <NodeLayout
           Size="228,42"
-          Id="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro WRs"
-          TopLeft="625,8" />
+          Id="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro WRs"
+          TopLeft="697,112" />
         <NodeLayout
-          Size="276,42"
-          Id="Package\Load Staged FantasyPro Players\Lookup FantasyVBD TeamCode from Map"
-          TopLeft="300,442.666666666667" />
+          Size="145,42"
+          Id="Package\Load Staged FantasyPro PlayerProjections\Lookup Player"
+          TopLeft="441,555" />
         <NodeLayout
           Size="224,42"
-          Id="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro TEs"
-          TopLeft="912,13" />
+          Id="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro TEs"
+          TopLeft="984,117" />
         <NodeLayout
           Size="166,42"
-          Id="Package\Load Staged FantasyPro Players\Derive RB Column"
-          TopLeft="377,91" />
+          Id="Package\Load Staged FantasyPro PlayerProjections\Derive RB Column"
+          TopLeft="449,195" />
         <NodeLayout
           Size="173,42"
-          Id="Package\Load Staged FantasyPro Players\Derived QB Column"
-          TopLeft="82,88.6666666666666" />
+          Id="Package\Load Staged FantasyPro PlayerProjections\Derived QB Column"
+          TopLeft="154,192.666666666667" />
+        <NodeLayout
+          Size="123,42"
+          Id="Package\Load Staged FantasyPro PlayerProjections\Union All"
+          TopLeft="437,285" />
+        <NodeLayout
+          Size="224,42"
+          Id="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro RBs"
+          TopLeft="434,112" />
+        <NodeLayout
+          Size="169,42"
+          Id="Package\Load Staged FantasyPro PlayerProjections\Derive WR Column"
+          TopLeft="732,200" />
+        <NodeLayout
+          Size="171,42"
+          Id="Package\Load Staged FantasyPro PlayerProjections\OLE DB Destination"
+          TopLeft="428,837" />
+        <NodeLayout
+          Size="166,42"
+          Id="Package\Load Staged FantasyPro PlayerProjections\Parse PlayerName"
+          TopLeft="422,381.666666666667" />
+        <NodeLayout
+          Size="193,42"
+          Id="Package\Load Staged FantasyPro PlayerProjections\Calculate Fantasy Points"
+          TopLeft="431,722" />
         <EdgeLayout
-          Id="Package\Load Staged FantasyPro Players.Paths[OLE DB Source Output2]"
-          TopLeft="741.75,50">
+          Id="Package\Load Staged FantasyPro PlayerProjections.Paths[Lookup Match Output]"
+          TopLeft="509.75,506.666666666667">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,46"
+              EndConnector="0,48.333333333333"
               Start="0,0"
-              End="0,38.5">
+              End="0,40.833333333333">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,38.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Load Staged FantasyPro Players.Paths[OLE DB Source Output1]"
-          TopLeft="474,50">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-14,41"
-              Start="0,0"
-              End="-14,33.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,16.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,16.5"
-                    Point2="0,20.5"
-                    Point3="-4,20.5" />
-                  <mssgle:LineSegment
-                    End="-10,20.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-10,20.5"
-                    Point2="-14,20.5"
-                    Point3="-14,24.5" />
-                  <mssgle:LineSegment
-                    End="-14,33.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Load Staged FantasyPro Players.Paths[OLE DB Source Output]"
-          TopLeft="166,46">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,42.6666666666666"
-              Start="0,0"
-              End="0,35.1666666666666">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,35.1666666666666" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Load Staged FantasyPro Players.Paths[Lookup Match Output3]"
-          TopLeft="434.25,484.666666666667">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,36"
-              Start="0,0"
-              End="0,28.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,28.5" />
+                    End="0,40.833333333333" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,8.4453125,96.3827734375,11.609375"
+              BoundingBox="-48.19138671875,14.6119791666665,96.3827734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\Load Staged FantasyPro Players.Paths[Lookup Match Output2]"
-          TopLeft="436,402.666666666667">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,40"
-              Start="0,0"
-              End="0,32.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,32.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,10.4453125,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Load Staged FantasyPro Players.Paths[Lookup Match Output1]"
-          TopLeft="435,655.666666666667">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,52.9999999999998"
-              Start="0,0"
-              End="0,45.4999999999998">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,45.4999999999998" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,16.9453124999999,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Load Staged FantasyPro Players.Paths[Lookup Match Output]"
-          TopLeft="434.5,562.666666666667">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,50.9999999999999"
-              Start="0,0"
-              End="0,43.4999999999999">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,43.4999999999999" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,15.9453125,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Load Staged FantasyPro Players.Paths[Derived Column Output3]"
-          TopLeft="992.5,142">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-531.5,39"
-              Start="0,0"
-              End="-531.5,31.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,23.1016949152542" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,23.1016949152542"
-                    Point2="0,27.1016949152542"
-                    Point3="-4,27.1016949152542" />
-                  <mssgle:LineSegment
-                    End="-527.5,27.1016949152542" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-527.5,27.1016949152542"
-                    Point2="-531.5,27.1016949152542"
-                    Point3="-531.5,31.1016949152542" />
-                  <mssgle:LineSegment
-                    End="-531.5,31.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Load Staged FantasyPro Players.Paths[Derived Column Output2]"
-          TopLeft="744.5,138">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-289.25,43"
-              Start="0,0"
-              End="-289.25,35.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,24.0583554376658" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,24.0583554376658"
-                    Point2="0,28.0583554376658"
-                    Point3="-4,28.0583554376658" />
-                  <mssgle:LineSegment
-                    End="-285.25,28.0583554376658" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-285.25,28.0583554376658"
-                    Point2="-289.25,28.0583554376658"
-                    Point3="-289.25,32.0583554376658" />
-                  <mssgle:LineSegment
-                    End="-289.25,35.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Load Staged FantasyPro Players.Paths[Derived Column Output1]"
-          TopLeft="460,133">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-14.3333333333334,48"
-              Start="0,0"
-              End="-14.3333333333334,40.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,24.430176565008" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,24.430176565008"
-                    Point2="0,28.430176565008"
-                    Point3="-4,28.430176565008" />
-                  <mssgle:LineSegment
-                    End="-10.3333333333334,28.430176565008" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-10.3333333333334,28.430176565008"
-                    Point2="-14.3333333333334,28.430176565008"
-                    Point3="-14.3333333333334,32.430176565008" />
-                  <mssgle:LineSegment
-                    End="-14.3333333333334,40.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Load Staged FantasyPro Players.Paths[Derived Column Output]"
-          TopLeft="168.5,130.666666666667">
+          Id="Package\Load Staged FantasyPro PlayerProjections.Paths[Derived Column Output3]"
+          TopLeft="240.5,234.666666666667">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -10470,419 +11324,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
                     Point3="258,29.1666666666667" />
                   <mssgle:LineSegment
                     End="258,42.8333333333334" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Load Staged FantasyPro Players.Paths[Union All Output 1]"
-          TopLeft="429.75,223">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,54.6666666666666"
-              Start="0,0"
-              End="0,47.1666666666666">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,47.1666666666666" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Load Staged FantasyPro Players.Paths[Output 0]"
-          TopLeft="433.5,319.666666666667">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,41"
-              Start="0,0"
-              End="0,33.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,33.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Load Staged FantasyPro Players.Paths[OLE DB Source Output3]"
-          TopLeft="1024,55">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-31.5,45"
-              Start="0,0"
-              End="-31.5,37.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,18.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,18.5"
-                    Point2="0,22.5"
-                    Point3="-4,22.5" />
-                  <mssgle:LineSegment
-                    End="-27.5,22.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-27.5,22.5"
-                    Point2="-31.5,22.5"
-                    Point3="-31.5,26.5" />
-                  <mssgle:LineSegment
-                    End="-31.5,37.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-      </GraphLayout>
-    </LayoutInfo>
-  </TaskHost>
-  <PipelineComponentMetadata
-    design-time-name="Package\Load Staged FantasyPro Players\Lookup LeagueYear ID">
-    <Properties>
-      <Property>
-        <Name>OverwriteParamsSQLProp</Name>
-        <Value
-          type="q2:boolean">false</Value>
-      </Property>
-      <Property>
-        <Name>UsedTableName</Name>
-        <Value
-          type="q3:string">[dbo].[LeagueYear]</Value>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q4:int">0</Value>
-      </Property>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro RBs">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Load Staged FantasyPro Players\Lookup Position">
-    <Properties>
-      <Property>
-        <Name>OverwriteParamsSQLProp</Name>
-        <Value
-          type="q2:boolean">false</Value>
-      </Property>
-      <Property>
-        <Name>UsedTableName</Name>
-        <Value
-          type="q3:string"></Value>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q4:int">0</Value>
-      </Property>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Load Staged FantasyPro Players\Lookup FantasyVBD Team ID">
-    <Properties>
-      <Property>
-        <Name>OverwriteParamsSQLProp</Name>
-        <Value
-          type="q2:boolean">false</Value>
-      </Property>
-      <Property>
-        <Name>UsedTableName</Name>
-        <Value
-          type="q3:string">[dbo].[Team]</Value>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q4:int">0</Value>
-      </Property>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro QBs">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Load Staged FantasyPro Players\OLE DB Destination">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro WRs">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Load Staged FantasyPro Players\Lookup FantasyVBD TeamCode from Map">
-    <Properties>
-      <Property>
-        <Name>OverwriteParamsSQLProp</Name>
-        <Value
-          type="q2:boolean">false</Value>
-      </Property>
-      <Property>
-        <Name>UsedTableName</Name>
-        <Value
-          type="q3:string">[dbo].[FantasyPros_TeamCodeMap]</Value>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q4:int">0</Value>
-      </Property>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro TEs">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <TaskHost
-    design-time-name="Package\Load Staged FantasyPro PlayerProjections">
-    <LayoutInfo>
-      <GraphLayout
-        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
-        <NodeLayout
-          Size="166,42"
-          Id="Package\Load Staged FantasyPro PlayerProjections\Parse PlayerName"
-          TopLeft="422,381.666666666667" />
-        <NodeLayout
-          Size="188,42"
-          Id="Package\Load Staged FantasyPro PlayerProjections\Lookup LeagueYear ID"
-          TopLeft="412,464.666666666667" />
-        <NodeLayout
-          Size="169,42"
-          Id="Package\Load Staged FantasyPro PlayerProjections\Derive WR Column"
-          TopLeft="732,200" />
-        <NodeLayout
-          Size="224,42"
-          Id="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro RBs"
-          TopLeft="434,112" />
-        <NodeLayout
-          Size="165,42"
-          Id="Package\Load Staged FantasyPro PlayerProjections\Derive TE Column"
-          TopLeft="982,204" />
-        <NodeLayout
-          Size="225,42"
-          Id="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro QBs"
-          TopLeft="123,108" />
-        <NodeLayout
-          Size="123,42"
-          Id="Package\Load Staged FantasyPro PlayerProjections\Union All"
-          TopLeft="437,285" />
-        <NodeLayout
-          Size="228,42"
-          Id="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro WRs"
-          TopLeft="697,112" />
-        <NodeLayout
-          Size="224,42"
-          Id="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro TEs"
-          TopLeft="984,117" />
-        <NodeLayout
-          Size="166,42"
-          Id="Package\Load Staged FantasyPro PlayerProjections\Derive RB Column"
-          TopLeft="449,195" />
-        <NodeLayout
-          Size="173,42"
-          Id="Package\Load Staged FantasyPro PlayerProjections\Derived QB Column"
-          TopLeft="154,192.666666666667" />
-        <EdgeLayout
-          Id="Package\Load Staged FantasyPro PlayerProjections.Paths[OLE DB Source Output]"
-          TopLeft="813.75,154">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,46"
-              Start="0,0"
-              End="0,38.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,38.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Load Staged FantasyPro PlayerProjections.Paths[OLE DB Source Output1]"
-          TopLeft="546,154">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-14,41"
-              Start="0,0"
-              End="-14,33.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,16.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,16.5"
-                    Point2="0,20.5"
-                    Point3="-4,20.5" />
-                  <mssgle:LineSegment
-                    End="-10,20.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-10,20.5"
-                    Point2="-14,20.5"
-                    Point3="-14,24.5" />
-                  <mssgle:LineSegment
-                    End="-14,33.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Load Staged FantasyPro PlayerProjections.Paths[OLE DB Source Output2]"
-          TopLeft="238,150">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,42.6666666666666"
-              Start="0,0"
-              End="0,35.1666666666666">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,35.1666666666666" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Load Staged FantasyPro PlayerProjections.Paths[Derived Column Output]"
-          TopLeft="1064.5,246">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-531.5,39"
-              Start="0,0"
-              End="-531.5,31.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,23.1016949152542" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,23.1016949152542"
-                    Point2="0,27.1016949152542"
-                    Point3="-4,27.1016949152542" />
-                  <mssgle:LineSegment
-                    End="-527.5,27.1016949152542" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-527.5,27.1016949152542"
-                    Point2="-531.5,27.1016949152542"
-                    Point3="-531.5,31.1016949152542" />
-                  <mssgle:LineSegment
-                    End="-531.5,31.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Load Staged FantasyPro PlayerProjections.Paths[Derived Column Output1]"
-          TopLeft="816.5,242">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-289.25,43"
-              Start="0,0"
-              End="-289.25,35.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,24.0583554376658" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,24.0583554376658"
-                    Point2="0,28.0583554376658"
-                    Point3="-4,28.0583554376658" />
-                  <mssgle:LineSegment
-                    End="-285.25,28.0583554376658" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-285.25,28.0583554376658"
-                    Point2="-289.25,28.0583554376658"
-                    Point3="-289.25,32.0583554376658" />
-                  <mssgle:LineSegment
-                    End="-289.25,35.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -10926,31 +11367,65 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\Load Staged FantasyPro PlayerProjections.Paths[Derived Column Output3]"
-          TopLeft="240.5,234.666666666667">
+          Id="Package\Load Staged FantasyPro PlayerProjections.Paths[Derived Column Output1]"
+          TopLeft="816.5,242">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="258,50.3333333333334"
+              EndConnector="-289.25,43"
               Start="0,0"
-              End="258,42.8333333333334">
+              End="-289.25,35.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,21.1666666666667" />
+                    End="0,24.0583554376658" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,21.1666666666667"
-                    Point2="0,25.1666666666667"
-                    Point3="4,25.1666666666667" />
+                    Point1="0,24.0583554376658"
+                    Point2="0,28.0583554376658"
+                    Point3="-4,28.0583554376658" />
                   <mssgle:LineSegment
-                    End="254,25.1666666666667" />
+                    End="-285.25,28.0583554376658" />
                   <mssgle:CubicBezierSegment
-                    Point1="254,25.1666666666667"
-                    Point2="258,25.1666666666667"
-                    Point3="258,29.1666666666667" />
+                    Point1="-285.25,28.0583554376658"
+                    Point2="-289.25,28.0583554376658"
+                    Point3="-289.25,32.0583554376658" />
                   <mssgle:LineSegment
-                    End="258,42.8333333333334" />
+                    End="-289.25,35.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Staged FantasyPro PlayerProjections.Paths[Derived Column Output]"
+          TopLeft="1064.5,246">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-531.5,39"
+              Start="0,0"
+              End="-531.5,31.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,23.1016949152542" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,23.1016949152542"
+                    Point2="0,27.1016949152542"
+                    Point3="-4,27.1016949152542" />
+                  <mssgle:LineSegment
+                    End="-527.5,27.1016949152542" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-527.5,27.1016949152542"
+                    Point2="-531.5,27.1016949152542"
+                    Point3="-531.5,31.1016949152542" />
+                  <mssgle:LineSegment
+                    End="-531.5,31.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -10973,6 +11448,40 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,47.1666666666666" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Staged FantasyPro PlayerProjections.Paths[Output 01]"
+          TopLeft="527.5,764">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-14,73"
+              Start="0,0"
+              End="-14,65.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,32.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,32.5"
+                    Point2="0,36.5"
+                    Point3="-4,36.5" />
+                  <mssgle:LineSegment
+                    End="-10,36.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-10,36.5"
+                    Point2="-14,36.5"
+                    Point3="-14,40.5" />
+                  <mssgle:LineSegment
+                    End="-14,65.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -11037,68 +11546,76 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="171,42"
-          Id="Package\Load Staged FantasyPro PlayerProjections\OLE DB Destination"
-          TopLeft="428,837" />
-        <NodeLayout
-          Size="145,42"
-          Id="Package\Load Staged FantasyPro PlayerProjections\Lookup Player"
-          TopLeft="441,555" />
         <EdgeLayout
-          Id="Package\Load Staged FantasyPro PlayerProjections.Paths[Lookup Match Output]"
-          TopLeft="509.75,506.666666666667">
+          Id="Package\Load Staged FantasyPro PlayerProjections.Paths[OLE DB Source Output2]"
+          TopLeft="238,150">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,48.333333333333"
+              EndConnector="0,42.6666666666666"
               Start="0,0"
-              End="0,40.833333333333">
+              End="0,35.1666666666666">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,40.833333333333" />
+                    End="0,35.1666666666666" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,14.6119791666665,96.3827734375,11.609375"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="193,42"
-          Id="Package\Load Staged FantasyPro PlayerProjections\Calculate Fantasy Points"
-          TopLeft="431,722" />
         <EdgeLayout
-          Id="Package\Load Staged FantasyPro PlayerProjections.Paths[Output 01]"
-          TopLeft="527.5,764">
+          Id="Package\Load Staged FantasyPro PlayerProjections.Paths[OLE DB Source Output1]"
+          TopLeft="546,154">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-14,73"
+              EndConnector="-14,41"
               Start="0,0"
-              End="-14,65.5">
+              End="-14,33.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,32.5" />
+                    End="0,16.5" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,32.5"
-                    Point2="0,36.5"
-                    Point3="-4,36.5" />
+                    Point1="0,16.5"
+                    Point2="0,20.5"
+                    Point3="-4,20.5" />
                   <mssgle:LineSegment
-                    End="-10,36.5" />
+                    End="-10,20.5" />
                   <mssgle:CubicBezierSegment
-                    Point1="-10,36.5"
-                    Point2="-14,36.5"
-                    Point3="-14,40.5" />
+                    Point1="-10,20.5"
+                    Point2="-14,20.5"
+                    Point3="-14,24.5" />
                   <mssgle:LineSegment
-                    End="-14,65.5" />
+                    End="-14,33.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Staged FantasyPro PlayerProjections.Paths[OLE DB Source Output]"
+          TopLeft="813.75,154">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,46"
+              Start="0,0"
+              End="0,38.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,38.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -11143,9 +11660,108 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <NodeLayout
+          Size="157,42"
+          Id="Package\Load Staged FantasyPro PlayerProjections\Derive K Column"
+          TopLeft="1260,207" />
+        <NodeLayout
+          Size="216,42"
+          Id="Package\Load Staged FantasyPro PlayerProjections\Get Unloaded Fantasy Pro Ks"
+          TopLeft="1262,120" />
+        <EdgeLayout
+          Id="Package\Load Staged FantasyPro PlayerProjections.Paths[OLE DB Source Output4]"
+          TopLeft="1370,162">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-31.5,45"
+              Start="0,0"
+              End="-31.5,37.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,18.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,18.5"
+                    Point2="0,22.5"
+                    Point3="-4,22.5" />
+                  <mssgle:LineSegment
+                    End="-27.5,22.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-27.5,22.5"
+                    Point2="-31.5,22.5"
+                    Point3="-31.5,26.5" />
+                  <mssgle:LineSegment
+                    End="-31.5,37.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Staged FantasyPro PlayerProjections.Paths[Derived Column Output4]"
+          TopLeft="1338.5,249">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-801.666666666667,36"
+              Start="0,0"
+              End="-801.666666666667,28.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,22.1496062992126" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,22.1496062992126"
+                    Point2="0,26.1496062992126"
+                    Point3="-4,26.1496062992126" />
+                  <mssgle:LineSegment
+                    End="-797.666666666667,26.1496062992126" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-797.666666666667,26.1496062992126"
+                    Point2="-801.666666666667,26.1496062992126"
+                    Point3="-801.666666666667,30.1496062992126" />
+                  <mssgle:LineSegment
+                    End="-801.666666666667,28.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Staged FantasyPro PlayerProjections\Lookup Player">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:string">false</Value>
+      </Property>
+      <Property>
+        <Name>UsedTableName</Name>
+        <Value
+          type="q3:string">[dbo].[Player]</Value>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q4:string">0</Value>
+      </Property>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\Load Staged FantasyPro PlayerProjections\OLE DB Destination">
     <Properties>
@@ -11159,24 +11775,678 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></arrayElement>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\Load Staged FantasyPro Players">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="64" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="166,42"
+          Id="Package\Load Staged FantasyPro Players\Parse PlayerName"
+          TopLeft="350,282.666666666667" />
+        <NodeLayout
+          Size="188,42"
+          Id="Package\Load Staged FantasyPro Players\Lookup LeagueYear ID"
+          TopLeft="340,365.666666666667" />
+        <NodeLayout
+          Size="169,42"
+          Id="Package\Load Staged FantasyPro Players\Derive WR Column"
+          TopLeft="660,101" />
+        <NodeLayout
+          Size="224,42"
+          Id="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro RBs"
+          TopLeft="362,13" />
+        <NodeLayout
+          Size="155,42"
+          Id="Package\Load Staged FantasyPro Players\Lookup Position"
+          TopLeft="353,525.666666666667" />
+        <NodeLayout
+          Size="219,42"
+          Id="Package\Load Staged FantasyPro Players\Lookup FantasyVBD Team ID"
+          TopLeft="329,618.666666666667" />
+        <NodeLayout
+          Size="165,42"
+          Id="Package\Load Staged FantasyPro Players\Derive TE Column"
+          TopLeft="910,105" />
+        <NodeLayout
+          Size="225,42"
+          Id="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro QBs"
+          TopLeft="51,9" />
+        <NodeLayout
+          Size="123,42"
+          Id="Package\Load Staged FantasyPro Players\Union All"
+          TopLeft="365,186" />
+        <NodeLayout
+          Size="173,42"
+          Id="Package\Load Staged FantasyPro Players\OLE DB Destination"
+          TopLeft="345,713.666666666666" />
+        <NodeLayout
+          Size="228,42"
+          Id="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro WRs"
+          TopLeft="625,13" />
+        <NodeLayout
+          Size="276,42"
+          Id="Package\Load Staged FantasyPro Players\Lookup FantasyVBD TeamCode from Map"
+          TopLeft="300,447.666666666667" />
+        <NodeLayout
+          Size="224,42"
+          Id="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro TEs"
+          TopLeft="912,18" />
+        <NodeLayout
+          Size="166,42"
+          Id="Package\Load Staged FantasyPro Players\Derive RB Column"
+          TopLeft="377,96" />
+        <NodeLayout
+          Size="173,42"
+          Id="Package\Load Staged FantasyPro Players\Derived QB Column"
+          TopLeft="82,93.6666666666666" />
+        <EdgeLayout
+          Id="Package\Load Staged FantasyPro Players.Paths[OLE DB Source Output2]"
+          TopLeft="741.75,55">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,46"
+              Start="0,0"
+              End="0,38.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,38.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Staged FantasyPro Players.Paths[OLE DB Source Output1]"
+          TopLeft="474,55">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-14,41"
+              Start="0,0"
+              End="-14,33.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,16.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,16.5"
+                    Point2="0,20.5"
+                    Point3="-4,20.5" />
+                  <mssgle:LineSegment
+                    End="-10,20.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-10,20.5"
+                    Point2="-14,20.5"
+                    Point3="-14,24.5" />
+                  <mssgle:LineSegment
+                    End="-14,33.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Staged FantasyPro Players.Paths[OLE DB Source Output]"
+          TopLeft="166,51">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,42.6666666666666"
+              Start="0,0"
+              End="0,35.1666666666666">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,35.1666666666666" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Staged FantasyPro Players.Paths[Lookup Match Output3]"
+          TopLeft="434.25,489.666666666667">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,36"
+              Start="0,0"
+              End="0,28.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,28.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,8.4453125,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Staged FantasyPro Players.Paths[Lookup Match Output2]"
+          TopLeft="436,407.666666666667">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,40"
+              Start="0,0"
+              End="0,32.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,32.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,10.4453125,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Staged FantasyPro Players.Paths[Lookup Match Output1]"
+          TopLeft="435,660.666666666667">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,52.9999999999998"
+              Start="0,0"
+              End="0,45.4999999999998">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,45.4999999999998" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,16.9453124999999,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Staged FantasyPro Players.Paths[Lookup Match Output]"
+          TopLeft="434.5,567.666666666667">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.9999999999999"
+              Start="0,0"
+              End="0,43.4999999999999">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,43.4999999999999" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,15.9453125,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Staged FantasyPro Players.Paths[Derived Column Output3]"
+          TopLeft="992.5,147">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-531.5,39"
+              Start="0,0"
+              End="-531.5,31.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,23.1016949152542" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,23.1016949152542"
+                    Point2="0,27.1016949152542"
+                    Point3="-4,27.1016949152542" />
+                  <mssgle:LineSegment
+                    End="-527.5,27.1016949152542" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-527.5,27.1016949152542"
+                    Point2="-531.5,27.1016949152542"
+                    Point3="-531.5,31.1016949152542" />
+                  <mssgle:LineSegment
+                    End="-531.5,31.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Staged FantasyPro Players.Paths[Derived Column Output2]"
+          TopLeft="744.5,143">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-289.25,43"
+              Start="0,0"
+              End="-289.25,35.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,24.0583554376658" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,24.0583554376658"
+                    Point2="0,28.0583554376658"
+                    Point3="-4,28.0583554376658" />
+                  <mssgle:LineSegment
+                    End="-285.25,28.0583554376658" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-285.25,28.0583554376658"
+                    Point2="-289.25,28.0583554376658"
+                    Point3="-289.25,32.0583554376658" />
+                  <mssgle:LineSegment
+                    End="-289.25,35.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Staged FantasyPro Players.Paths[Derived Column Output1]"
+          TopLeft="460,138">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-14.3333333333334,48"
+              Start="0,0"
+              End="-14.3333333333334,40.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,24.430176565008" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,24.430176565008"
+                    Point2="0,28.430176565008"
+                    Point3="-4,28.430176565008" />
+                  <mssgle:LineSegment
+                    End="-10.3333333333334,28.430176565008" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-10.3333333333334,28.430176565008"
+                    Point2="-14.3333333333334,28.430176565008"
+                    Point3="-14.3333333333334,32.430176565008" />
+                  <mssgle:LineSegment
+                    End="-14.3333333333334,40.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Staged FantasyPro Players.Paths[Derived Column Output]"
+          TopLeft="168.5,135.666666666667">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="258,50.3333333333334"
+              Start="0,0"
+              End="258,42.8333333333334">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,21.1666666666667" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,21.1666666666667"
+                    Point2="0,25.1666666666667"
+                    Point3="4,25.1666666666667" />
+                  <mssgle:LineSegment
+                    End="254,25.1666666666667" />
+                  <mssgle:CubicBezierSegment
+                    Point1="254,25.1666666666667"
+                    Point2="258,25.1666666666667"
+                    Point3="258,29.1666666666667" />
+                  <mssgle:LineSegment
+                    End="258,42.8333333333334" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Staged FantasyPro Players.Paths[Union All Output 1]"
+          TopLeft="429.75,228">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,54.6666666666666"
+              Start="0,0"
+              End="0,47.1666666666666">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,47.1666666666666" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Staged FantasyPro Players.Paths[Output 0]"
+          TopLeft="433.5,324.666666666667">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,41"
+              Start="0,0"
+              End="0,33.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,33.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Staged FantasyPro Players.Paths[OLE DB Source Output3]"
+          TopLeft="1024,60">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-31.5,45"
+              Start="0,0"
+              End="-31.5,37.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,18.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,18.5"
+                    Point2="0,22.5"
+                    Point3="-4,22.5" />
+                  <mssgle:LineSegment
+                    End="-27.5,22.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-27.5,22.5"
+                    Point2="-31.5,22.5"
+                    Point3="-31.5,26.5" />
+                  <mssgle:LineSegment
+                    End="-31.5,37.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="157,42"
+          Id="Package\Load Staged FantasyPro Players\Derive K Column"
+          TopLeft="1198,105" />
+        <NodeLayout
+          Size="216,42"
+          Id="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks"
+          TopLeft="1200,18" />
+        <EdgeLayout
+          Id="Package\Load Staged FantasyPro Players.Paths[OLE DB Source Output4]"
+          TopLeft="1308,60">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-31.5,45"
+              Start="0,0"
+              End="-31.5,37.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,18.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,18.5"
+                    Point2="0,22.5"
+                    Point3="-4,22.5" />
+                  <mssgle:LineSegment
+                    End="-27.5,22.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-27.5,22.5"
+                    Point2="-31.5,22.5"
+                    Point3="-31.5,26.5" />
+                  <mssgle:LineSegment
+                    End="-31.5,37.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Staged FantasyPro Players.Paths[Derived Column Output4]"
+          TopLeft="1276.5,147">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-811.666666666667,39"
+              Start="0,0"
+              End="-811.666666666667,31.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,24.3287401574803" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,24.3287401574803"
+                    Point2="0,28.3287401574803"
+                    Point3="-4,28.3287401574803" />
+                  <mssgle:LineSegment
+                    End="-807.666666666667,28.3287401574803" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-807.666666666667,28.3287401574803"
+                    Point2="-811.666666666667,28.3287401574803"
+                    Point3="-811.666666666667,32.3287401574803" />
+                  <mssgle:LineSegment
+                    End="-811.666666666667,31.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\Load Staged FantasyPro PlayerProjections\Lookup Player">
+    design-time-name="Package\Load Staged FantasyPro Players\Lookup LeagueYear ID">
     <Properties>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:boolean">false</Value>
+          type="q2:string">false</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
         <Value
-          type="q3:string">[dbo].[Player]</Value>
+          type="q3:string">[dbo].[LeagueYear]</Value>
       </Property>
       <Property>
         <Name>TableInfoObjectType</Name>
         <Value
-          type="q4:int">0</Value>
+          type="q4:string">0</Value>
       </Property>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro RBs">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Staged FantasyPro Players\Lookup Position">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:string">false</Value>
+      </Property>
+      <Property>
+        <Name>UsedTableName</Name>
+        <Value
+          type="q3:string"></Value>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q4:string">0</Value>
+      </Property>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Staged FantasyPro Players\Lookup FantasyVBD Team ID">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:string">false</Value>
+      </Property>
+      <Property>
+        <Name>UsedTableName</Name>
+        <Value
+          type="q3:string">[dbo].[Team]</Value>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q4:string">0</Value>
+      </Property>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro QBs">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Staged FantasyPro Players\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro WRs">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Staged FantasyPro Players\Lookup FantasyVBD TeamCode from Map">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:string">false</Value>
+      </Property>
+      <Property>
+        <Name>UsedTableName</Name>
+        <Value
+          type="q3:string">[dbo].[FantasyPros_TeamCodeMap]</Value>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q4:string">0</Value>
+      </Property>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro TEs">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Staged FantasyPro Players\Get Unloaded Fantasy Pro Ks">
+    <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
       </Property>
